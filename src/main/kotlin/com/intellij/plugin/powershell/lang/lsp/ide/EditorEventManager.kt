@@ -21,9 +21,22 @@ import com.intellij.plugin.powershell.lang.lsp.util.DocumentUtils.offsetToLSPPos
 import com.intellij.plugin.powershell.lang.lsp.util.editorToURI
 import com.intellij.plugin.powershell.lang.lsp.util.editorToURIString
 import com.intellij.psi.PsiDocumentManager
-import org.eclipse.lsp4j.*
+import org.eclipse.lsp4j.CompletionList
+import org.eclipse.lsp4j.Diagnostic
+import org.eclipse.lsp4j.DidChangeConfigurationParams
+import org.eclipse.lsp4j.DidChangeTextDocumentParams
+import org.eclipse.lsp4j.DidCloseTextDocumentParams
+import org.eclipse.lsp4j.DidOpenTextDocumentParams
+import org.eclipse.lsp4j.Position
+import org.eclipse.lsp4j.Range
+import org.eclipse.lsp4j.TextDocumentContentChangeEvent
+import org.eclipse.lsp4j.TextDocumentIdentifier
+import org.eclipse.lsp4j.TextDocumentItem
+import org.eclipse.lsp4j.TextDocumentPositionParams
+import org.eclipse.lsp4j.TextDocumentSyncKind
+import org.eclipse.lsp4j.VersionedTextDocumentIdentifier
 import java.net.URI
-import java.util.*
+import java.util.Collections
 import java.util.concurrent.TimeUnit
 
 class EditorEventManager(private val project: Project, private val editor: Editor, private val mouseListener: EditorMouseListenerImpl,
@@ -134,6 +147,7 @@ class EditorEventManager(private val project: Project, private val editor: Edito
           TextDocumentSyncKind.Full -> {
             changesParams.contentChanges[0].text = editor.document.text
           }
+          else -> Unit
         }
         requestManager.didChange(changesParams)
       } else {
