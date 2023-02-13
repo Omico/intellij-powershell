@@ -3,3 +3,5 @@
 /build
 /Plaster
 /PSScriptAnalyzer
+/src/main/gen/idea-flex.skeleton
+/src/main/gen/jflex-*.jar

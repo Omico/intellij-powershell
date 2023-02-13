@@ -1863,7 +1863,7 @@ public class _PowerShellLexer implements FlexLexer {
   /**
    * Refills the input buffer.
    *
-   * @return      <code>false</code>, iff there was new input.
+   * @return      {@code false}, iff there was new input.
    *
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
@@ -1899,7 +1899,7 @@ public class _PowerShellLexer implements FlexLexer {
 
 
   /**
-   * Returns the character at position <tt>pos</tt> from the
+   * Returns the character at position {@code pos} from the
    * matched text.
    *
    * It is equivalent to yytext().charAt(pos), but faster
@@ -1923,7 +1923,7 @@ public class _PowerShellLexer implements FlexLexer {
 
 
   /**
-   * Reports an error that occured while scanning.
+   * Reports an error that occurred while scanning.
    *
    * In a wellformed scanner (no or only correct usage of
    * yypushback(int) and a match-all fallback rule) this method
@@ -1998,10 +1998,10 @@ public class _PowerShellLexer implements FlexLexer {
         zzCh = Character.codePointAt(zzBufferL, zzCurrentPosL/*, zzMarkedPosL*/);
         zzCharCount = Character.charCount(zzCh);
         switch (zzCh) {
-        case '\u000B':  // fall though
-        case '\u000C':  // fall though
-        case '\u0085':  // fall though
-        case '\u2028':  // fall though
+        case '\u000B':  // fall through
+        case '\u000C':  // fall through
+        case '\u0085':  // fall through
+        case '\u2028':  // fall through
         case '\u2029':
           yycolumn = 0;
           zzR = false;
