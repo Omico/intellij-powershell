@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 <#
 .SYNOPSIS
     Starts the language and debug services from the PowerShellEditorServices module.
@@ -20,7 +23,7 @@
     If editor integration authors make modifications to this script, please
     consider contributing changes back to the canonical version of this script
     at the PowerShell Editor Services GitHub repository:
-    https://github.com/PowerShell/PowerShellEditorServices/blob/master/module/PowerShellEditorServices/Start-EditorServices.ps1'
+    https://github.com/PowerShell/PowerShellEditorServices/blob/main/module/PowerShellEditorServices/Start-EditorServices.ps1'
 #>
 [CmdletBinding(DefaultParameterSetName="NamedPipe")]
 param(
@@ -46,7 +49,7 @@ param(
     [ValidateNotNullOrEmpty()]
     $LogPath,
 
-    [ValidateSet("Diagnostic", "Normal", "Verbose", "Error")]
+    [ValidateSet("Diagnostic", "Verbose", "Normal", "Warning", "Error")]
     $LogLevel,
 
 	[Parameter(Mandatory=$true)]
@@ -58,7 +61,13 @@ param(
     $EnableConsoleRepl,
 
     [switch]
+    $UseLegacyReadLine,
+
+    [switch]
     $DebugServiceOnly,
+
+    [switch]
+    $LanguageServiceOnly,
 
     [string[]]
     $AdditionalModules,
@@ -105,407 +114,46 @@ param(
     $DebugServiceOutPipeName = $null
 )
 
-$DEFAULT_USER_MODE = "600"
-
-if ($LogLevel -eq "Diagnostic") {
-    if (!$Stdio.IsPresent) {
-        $VerbosePreference = 'Continue'
-    }
-    $scriptName = [System.IO.Path]::GetFileNameWithoutExtension($MyInvocation.MyCommand.Name)
-    $logFileName = [System.IO.Path]::GetFileName($LogPath)
-    Start-Transcript (Join-Path (Split-Path $LogPath -Parent) "$scriptName-$logFileName") -Force | Out-Null
-}
-
-function LogSection([string]$msg) {
-    Write-Verbose "`n#-- $msg $('-' * ([Math]::Max(0, 73 - $msg.Length)))"
-}
-
-function Log([string[]]$msg) {
-    $msg | Write-Verbose
-}
-
-function ExitWithError($errorString) {
-    Write-Host -ForegroundColor Red "`n`n$errorString"
-
-    # Sleep for a while to make sure the user has time to see and copy the
-    # error message
-    Start-Sleep -Seconds 300
-
-    exit 1;
-}
-
-function WriteSessionFile($sessionInfo) {
-    $sessionInfoJson = Microsoft.PowerShell.Utility\ConvertTo-Json -InputObject $sessionInfo -Compress
-    Log "Writing session file with contents:"
-    Log $sessionInfoJson
-    $sessionInfoJson | Microsoft.PowerShell.Management\Set-Content -Force -Path "$SessionDetailsPath" -ErrorAction Stop
-}
-
-# Are we running in PowerShell 2 or earlier?
-if ($PSVersionTable.PSVersion.Major -le 2) {
-    # No ConvertTo-Json on PSv2 and below, so write out the JSON manually
-    "{`"status`": `"failed`", `"reason`": `"unsupported`", `"powerShellVersion`": `"$($PSVersionTable.PSVersion.ToString())`"}" |
-        Microsoft.PowerShell.Management\Set-Content -Force -Path "$SessionDetailsPath" -ErrorAction Stop
-
-    ExitWithError "Unsupported PowerShell version $($PSVersionTable.PSVersion), language features are disabled."
-}
-
-
-if ($host.Runspace.LanguageMode -eq 'ConstrainedLanguage') {
-    WriteSessionFile @{
-        "status" = "failed"
-        "reason" = "languageMode"
-        "detail" = $host.Runspace.LanguageMode.ToString()
-    }
-
-    ExitWithError "PowerShell is configured with an unsupported LanguageMode (ConstrainedLanguage), language features are disabled."
-}
-
-# net45 is not supported, only net451 and up
-if ($PSVersionTable.PSVersion.Major -le 5) {
-    $net451Version = 378675
-    $dotnetVersion = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\").Release
-    if ($dotnetVersion -lt $net451Version) {
-        Write-SessionFile @{
-            status = failed
-            reason = "netversion"
-            detail = "$netVersion"
-        }
-
-        ExitWithError "Your .NET version is too low. Upgrade to net451 or higher to run the PowerShell extension."
-    }
-}
-
-# If PSReadline is present in the session, remove it so that runspace
-# management is easier
-if ((Microsoft.PowerShell.Core\Get-Module PSReadline).Count -gt 0) {
-    LogSection "Removing PSReadLine module"
-    Microsoft.PowerShell.Core\Remove-Module PSReadline -ErrorAction SilentlyContinue
-}
-
-# This variable will be assigned later to contain information about
-# what happened while attempting to launch the PowerShell Editor
-# Services host
-$resultDetails = $null;
-
-function Test-ModuleAvailable($ModuleName, $ModuleVersion) {
-    Log "Testing module availability $ModuleName $ModuleVersion"
-
-    $modules = Microsoft.PowerShell.Core\Get-Module -ListAvailable $moduleName
-    if ($null -ne $modules) {
-        if ($null -ne $ModuleVersion) {
-            foreach ($module in $modules) {
-                if ($module.Version.Equals($moduleVersion)) {
-                    Log "$ModuleName $ModuleVersion found"
-                    return $true;
-                }
-            }
-        }
-        else {
-            Log "$ModuleName $ModuleVersion found"
-            return $true;
-        }
-    }
-
-    Log "$ModuleName $ModuleVersion NOT found"
-    return $false;
-}
-
-function New-NamedPipeName {
-    # We try 10 times to find a valid pipe name
-    for ($i = 0; $i -lt 10; $i++) {
-        $PipeName = "PSES_$([System.IO.Path]::GetRandomFileName())"
-
-        if ((Test-NamedPipeName -PipeName $PipeName)) {
-            return $PipeName
-        }
-    }
-
-    ExitWithError "Could not find valid a pipe name."
-}
-
-function Get-NamedPipePath {
-    param(
-        [Parameter(Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $PipeName
-    )
-
-    if (($PSVersionTable.PSVersion.Major -le 5) -or $IsWindows) {
-        return "\\.\pipe\$PipeName";
-    }
-    else {
-        # Windows uses NamedPipes where non-Windows platforms use Unix Domain Sockets.
-        # the Unix Domain Sockets live in the tmp directory and are prefixed with "CoreFxPipe_"
-        return (Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath "CoreFxPipe_$PipeName")
-    }
-}
-
-# Returns True if it's a valid pipe name
-# A valid pipe name is a file that does not exist either
-# in the temp directory (macOS & Linux) or in the pipe directory (Windows)
-function Test-NamedPipeName {
-    param(
-        [Parameter(Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $PipeName
-    )
-
-    $path = Get-NamedPipePath -PipeName $PipeName
-    return !(Test-Path $path)
-}
-
-function Set-NamedPipeMode {
-    param(
-        [Parameter(Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $PipeFile
-    )
-
-    if (($PSVersionTable.PSVersion.Major -le 5) -or $IsWindows) {
-        return
-    }
-
-    chmod $DEFAULT_USER_MODE $PipeFile
-
-    if ($IsLinux) {
-        $mode = /usr/bin/stat -c "%a" $PipeFile
-    }
-    elseif ($IsMacOS) {
-        $mode = /usr/bin/stat -f "%A" $PipeFile
-    }
-
-    if ($mode -ne $DEFAULT_USER_MODE) {
-        ExitWithError "Permissions to the pipe file were not set properly. Expected: $DEFAULT_USER_MODE Actual: $mode for file: $PipeFile"
-    }
-}
-
-LogSection "Console Encoding"
-Log $OutputEncoding
-
-function Get-ValidatedNamedPipeName {
-    param(
-        [string]
-        $PipeName
-    )
-
-    # If no PipeName is passed in, then we create one that's guaranteed to be valid
-    if (!$PipeName) {
-        $PipeName = New-NamedPipeName
-    }
-    elseif (!(Test-NamedPipeName -PipeName $PipeName)) {
-        ExitWithError "Pipe name supplied is already in use: $PipeName"
-    }
-
-    return $PipeName
-}
-
-function Set-PipeFileResult {
-    param (
-        [Hashtable]
-        $ResultTable,
-
-        [string]
-        $PipeNameKey,
-
-        [string]
-        $PipeNameValue
-    )
-
-    $ResultTable[$PipeNameKey] = Get-NamedPipePath -PipeName $PipeNameValue
-    if (($PSVersionTable.PSVersion.Major -ge 6) -and ($IsLinux -or $IsMacOS)) {
-        Set-NamedPipeMode -PipeFile $ResultTable[$PipeNameKey]
-    }
-}
-
-# Add BundledModulesPath to $env:PSModulePath
-if ($BundledModulesPath) {
-    $env:PSModulePath = $env:PSModulePath.TrimEnd([System.IO.Path]::PathSeparator) + [System.IO.Path]::PathSeparator + $BundledModulesPath
-    LogSection "Updated PSModulePath to:"
-    Log ($env:PSModulePath -split [System.IO.Path]::PathSeparator)
-}
-
-LogSection "Check required modules available"
-# Check if PowerShellGet module is available
-if ((Test-ModuleAvailable "PowerShellGet") -eq $false) {
-    Log "Failed to find PowerShellGet module"
-    # TODO: WRITE ERROR
-}
-
-try {
-    LogSection "Start up PowerShellEditorServices"
-    Log "Importing PowerShellEditorServices"
-
-    Microsoft.PowerShell.Core\Import-Module PowerShellEditorServices -ErrorAction Stop
-
-    if ($EnableConsoleRepl) {
-        Write-Host "PowerShell Integrated Console`n"
-    }
-
-    $resultDetails = @{
-        "status" = "not started";
-        "languageServiceTransport" = $PSCmdlet.ParameterSetName;
-        "debugServiceTransport" = $PSCmdlet.ParameterSetName;
-    };
-
-    # Create the Editor Services host
-    Log "Invoking Start-EditorServicesHost"
-    # There could be only one service on Stdio channel
-    # Locate available port numbers for services
-    switch ($PSCmdlet.ParameterSetName) {
-        "Stdio" {
-            $editorServicesHost = Start-EditorServicesHost `
-                                        -HostName $HostName `
-                                        -HostProfileId $HostProfileId `
-                                        -HostVersion $HostVersion `
-                                        -LogPath $LogPath `
-                                        -LogLevel $LogLevel `
-                                        -AdditionalModules $AdditionalModules `
-                                        -Stdio `
-                                        -BundledModulesPath $BundledModulesPath `
-                                        -EnableConsoleRepl:$EnableConsoleRepl.IsPresent `
-                                        -DebugServiceOnly:$DebugServiceOnly.IsPresent `
-                                        -WaitForDebugger:$WaitForDebugger.IsPresent
-            break
-        }
-
-        "NamedPipeSimplex" {
-            $LanguageServiceInPipeName = Get-ValidatedNamedPipeName $LanguageServiceInPipeName
-            $LanguageServiceOutPipeName = Get-ValidatedNamedPipeName $LanguageServiceOutPipeName
-            $DebugServiceInPipeName = Get-ValidatedNamedPipeName $DebugServiceInPipeName
-            $DebugServiceOutPipeName = Get-ValidatedNamedPipeName $DebugServiceOutPipeName
-
-            $editorServicesHost = Start-EditorServicesHost `
-                                        -HostName $HostName `
-                                        -HostProfileId $HostProfileId `
-                                        -HostVersion $HostVersion `
-                                        -LogPath $LogPath `
-                                        -LogLevel $LogLevel `
-                                        -AdditionalModules $AdditionalModules `
-                                        -LanguageServiceInNamedPipe $LanguageServiceInPipeName `
-                                        -LanguageServiceOutNamedPipe $LanguageServiceOutPipeName `
-                                        -DebugServiceInNamedPipe $DebugServiceInPipeName `
-                                        -DebugServiceOutNamedPipe $DebugServiceOutPipeName `
-                                        -BundledModulesPath $BundledModulesPath `
-                                        -EnableConsoleRepl:$EnableConsoleRepl.IsPresent `
-                                        -DebugServiceOnly:$DebugServiceOnly.IsPresent `
-                                        -WaitForDebugger:$WaitForDebugger.IsPresent
-
-            Set-PipeFileResult $resultDetails "languageServiceReadPipeName" $LanguageServiceInPipeName
-            Set-PipeFileResult $resultDetails "languageServiceWritePipeName" $LanguageServiceOutPipeName
-            Set-PipeFileResult $resultDetails "debugServiceReadPipeName" $DebugServiceInPipeName
-            Set-PipeFileResult $resultDetails "debugServiceWritePipeName" $DebugServiceOutPipeName
-            break
-        }
-
-        Default {
-            $LanguageServicePipeName = Get-ValidatedNamedPipeName $LanguageServicePipeName
-            $DebugServicePipeName = Get-ValidatedNamedPipeName $DebugServicePipeName
-
-            $editorServicesHost = Start-EditorServicesHost `
-                                        -HostName $HostName `
-                                        -HostProfileId $HostProfileId `
-                                        -HostVersion $HostVersion `
-                                        -LogPath $LogPath `
-                                        -LogLevel $LogLevel `
-                                        -AdditionalModules $AdditionalModules `
-                                        -LanguageServiceNamedPipe $LanguageServicePipeName `
-                                        -DebugServiceNamedPipe $DebugServicePipeName `
-                                        -BundledModulesPath $BundledModulesPath `
-                                        -EnableConsoleRepl:$EnableConsoleRepl.IsPresent `
-                                        -DebugServiceOnly:$DebugServiceOnly.IsPresent `
-                                        -WaitForDebugger:$WaitForDebugger.IsPresent
-
-            Set-PipeFileResult $resultDetails "languageServicePipeName" $LanguageServicePipeName
-            Set-PipeFileResult $resultDetails "debugServicePipeName" $DebugServicePipeName
-            break
-        }
-    }
-
-    # TODO: Verify that the service is started
-    Log "Start-EditorServicesHost returned $editorServicesHost"
-
-    $resultDetails["status"] = "started"
-
-    # Notify the client that the services have started
-    WriteSessionFile $resultDetails
-
-    Log "Wrote out session file"
-}
-catch [System.Exception] {
-    $e = $_.Exception;
-    $errorString = ""
-
-    Log "ERRORS caught starting up EditorServicesHost"
-
-    while ($null -ne $e) {
-        $errorString = $errorString + ($e.Message + "`r`n" + $e.StackTrace + "`r`n")
-        $e = $e.InnerException;
-        Log $errorString
-    }
-
-    ExitWithError ("An error occurred while starting PowerShell Editor Services:`r`n`r`n" + $errorString)
-}
-
-try {
-    # Wait for the host to complete execution before exiting
-    LogSection "Waiting for EditorServicesHost to complete execution"
-    $editorServicesHost.WaitForCompletion()
-    Log "EditorServicesHost has completed execution"
-}
-catch [System.Exception] {
-    $e = $_.Exception;
-    $errorString = ""
-
-    Log "ERRORS caught while waiting for EditorServicesHost to complete execution"
-
-    while ($null -ne $e) {
-        $errorString = $errorString + ($e.Message + "`r`n" + $e.StackTrace + "`r`n")
-        $e = $e.InnerException;
-        Log $errorString
-    }
-}
+Import-Module -Name "$PSScriptRoot/PowerShellEditorServices.psd1"
+Start-EditorServices @PSBoundParameters
 
 # SIG # Begin signature block
-# MIIjhgYJKoZIhvcNAQcCoIIjdzCCI3MCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# MIInqgYJKoZIhvcNAQcCoIInmzCCJ5cCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCA1ud3M1OpTBg1B
-# 0H9D1s0zAVzc+uckyqiH5jaDovTzGqCCDYEwggX/MIID56ADAgECAhMzAAABA14l
-# HJkfox64AAAAAAEDMA0GCSqGSIb3DQEBCwUAMH4xCzAJBgNVBAYTAlVTMRMwEQYD
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCC/QMbiqvJR/TvV
+# N+fN/bYNYpy9Y6i8jKThMvqToh5EQ6CCDYEwggX/MIID56ADAgECAhMzAAACzI61
+# lqa90clOAAAAAALMMA0GCSqGSIb3DQEBCwUAMH4xCzAJBgNVBAYTAlVTMRMwEQYD
 # VQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNy
 # b3NvZnQgQ29ycG9yYXRpb24xKDAmBgNVBAMTH01pY3Jvc29mdCBDb2RlIFNpZ25p
-# bmcgUENBIDIwMTEwHhcNMTgwNzEyMjAwODQ4WhcNMTkwNzI2MjAwODQ4WjB0MQsw
+# bmcgUENBIDIwMTEwHhcNMjIwNTEyMjA0NjAxWhcNMjMwNTExMjA0NjAxWjB0MQsw
 # CQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9u
 # ZDEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMR4wHAYDVQQDExVNaWNy
 # b3NvZnQgQ29ycG9yYXRpb24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
-# AQDRlHY25oarNv5p+UZ8i4hQy5Bwf7BVqSQdfjnnBZ8PrHuXss5zCvvUmyRcFrU5
-# 3Rt+M2wR/Dsm85iqXVNrqsPsE7jS789Xf8xly69NLjKxVitONAeJ/mkhvT5E+94S
-# nYW/fHaGfXKxdpth5opkTEbOttU6jHeTd2chnLZaBl5HhvU80QnKDT3NsumhUHjR
-# hIjiATwi/K+WCMxdmcDt66VamJL1yEBOanOv3uN0etNfRpe84mcod5mswQ4xFo8A
-# DwH+S15UD8rEZT8K46NG2/YsAzoZvmgFFpzmfzS/p4eNZTkmyWPU78XdvSX+/Sj0
-# NIZ5rCrVXzCRO+QUauuxygQjAgMBAAGjggF+MIIBejAfBgNVHSUEGDAWBgorBgEE
-# AYI3TAgBBggrBgEFBQcDAzAdBgNVHQ4EFgQUR77Ay+GmP/1l1jjyA123r3f3QP8w
+# AQCiTbHs68bADvNud97NzcdP0zh0mRr4VpDv68KobjQFybVAuVgiINf9aG2zQtWK
+# No6+2X2Ix65KGcBXuZyEi0oBUAAGnIe5O5q/Y0Ij0WwDyMWaVad2Te4r1Eic3HWH
+# UfiiNjF0ETHKg3qa7DCyUqwsR9q5SaXuHlYCwM+m59Nl3jKnYnKLLfzhl13wImV9
+# DF8N76ANkRyK6BYoc9I6hHF2MCTQYWbQ4fXgzKhgzj4zeabWgfu+ZJCiFLkogvc0
+# RVb0x3DtyxMbl/3e45Eu+sn/x6EVwbJZVvtQYcmdGF1yAYht+JnNmWwAxL8MgHMz
+# xEcoY1Q1JtstiY3+u3ulGMvhAgMBAAGjggF+MIIBejAfBgNVHSUEGDAWBgorBgEE
+# AYI3TAgBBggrBgEFBQcDAzAdBgNVHQ4EFgQUiLhHjTKWzIqVIp+sM2rOHH11rfQw
 # UAYDVR0RBEkwR6RFMEMxKTAnBgNVBAsTIE1pY3Jvc29mdCBPcGVyYXRpb25zIFB1
-# ZXJ0byBSaWNvMRYwFAYDVQQFEw0yMzAwMTIrNDM3OTY1MB8GA1UdIwQYMBaAFEhu
+# ZXJ0byBSaWNvMRYwFAYDVQQFEw0yMzAwMTIrNDcwNTI5MB8GA1UdIwQYMBaAFEhu
 # ZOVQBdOCqhc3NyK1bajKdQKVMFQGA1UdHwRNMEswSaBHoEWGQ2h0dHA6Ly93d3cu
 # bWljcm9zb2Z0LmNvbS9wa2lvcHMvY3JsL01pY0NvZFNpZ1BDQTIwMTFfMjAxMS0w
 # Ny0wOC5jcmwwYQYIKwYBBQUHAQEEVTBTMFEGCCsGAQUFBzAChkVodHRwOi8vd3d3
 # Lm1pY3Jvc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY0NvZFNpZ1BDQTIwMTFfMjAx
-# MS0wNy0wOC5jcnQwDAYDVR0TAQH/BAIwADANBgkqhkiG9w0BAQsFAAOCAgEAn/XJ
-# Uw0/DSbsokTYDdGfY5YGSz8eXMUzo6TDbK8fwAG662XsnjMQD6esW9S9kGEX5zHn
-# wya0rPUn00iThoj+EjWRZCLRay07qCwVlCnSN5bmNf8MzsgGFhaeJLHiOfluDnjY
-# DBu2KWAndjQkm925l3XLATutghIWIoCJFYS7mFAgsBcmhkmvzn1FFUM0ls+BXBgs
-# 1JPyZ6vic8g9o838Mh5gHOmwGzD7LLsHLpaEk0UoVFzNlv2g24HYtjDKQ7HzSMCy
-# RhxdXnYqWJ/U7vL0+khMtWGLsIxB6aq4nZD0/2pCD7k+6Q7slPyNgLt44yOneFuy
-# bR/5WcF9ttE5yXnggxxgCto9sNHtNr9FB+kbNm7lPTsFA6fUpyUSj+Z2oxOzRVpD
-# MYLa2ISuubAfdfX2HX1RETcn6LU1hHH3V6qu+olxyZjSnlpkdr6Mw30VapHxFPTy
-# 2TUxuNty+rR1yIibar+YRcdmstf/zpKQdeTr5obSyBvbJ8BblW9Jb1hdaSreU0v4
-# 6Mp79mwV+QMZDxGFqk+av6pX3WDG9XEg9FGomsrp0es0Rz11+iLsVT9qGTlrEOla
-# P470I3gwsvKmOMs1jaqYWSRAuDpnpAdfoP7YO0kT+wzh7Qttg1DO8H8+4NkI6Iwh
-# SkHC3uuOW+4Dwx1ubuZUNWZncnwa6lL2IsRyP64wggd6MIIFYqADAgECAgphDpDS
+# MS0wNy0wOC5jcnQwDAYDVR0TAQH/BAIwADANBgkqhkiG9w0BAQsFAAOCAgEAeA8D
+# sOAHS53MTIHYu8bbXrO6yQtRD6JfyMWeXaLu3Nc8PDnFc1efYq/F3MGx/aiwNbcs
+# J2MU7BKNWTP5JQVBA2GNIeR3mScXqnOsv1XqXPvZeISDVWLaBQzceItdIwgo6B13
+# vxlkkSYMvB0Dr3Yw7/W9U4Wk5K/RDOnIGvmKqKi3AwyxlV1mpefy729FKaWT7edB
+# d3I4+hldMY8sdfDPjWRtJzjMjXZs41OUOwtHccPazjjC7KndzvZHx/0VWL8n0NT/
+# 404vftnXKifMZkS4p2sB3oK+6kCcsyWsgS/3eYGw1Fe4MOnin1RhgrW1rHPODJTG
+# AUOmW4wc3Q6KKr2zve7sMDZe9tfylonPwhk971rX8qGw6LkrGFv31IJeJSe/aUbG
+# dUDPkbrABbVvPElgoj5eP3REqx5jdfkQw7tOdWkhn0jDUh2uQen9Atj3RkJyHuR0
+# GUsJVMWFJdkIO/gFwzoOGlHNsmxvpANV86/1qgb1oZXdrURpzJp53MsDaBY/pxOc
+# J0Cvg6uWs3kQWgKk5aBzvsX95BzdItHTpVMtVPW4q41XEvbFmUP1n6oL5rdNdrTM
+# j/HXMRk1KCksax1Vxo3qv+13cCsZAaQNaIAvt5LvkshZkDZIP//0Hnq7NnWeYR3z
+# 4oFiw9N2n3bb9baQWuWPswG0Dq9YT9kb+Cs4qIIwggd6MIIFYqADAgECAgphDpDS
 # AAAAAAADMA0GCSqGSIb3DQEBCwUAMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMK
 # V2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0
 # IENvcnBvcmF0aW9uMTIwMAYDVQQDEylNaWNyb3NvZnQgUm9vdCBDZXJ0aWZpY2F0
@@ -545,119 +193,141 @@ catch [System.Exception] {
 # xw4o7t5lL+yX9qFcltgA1qFGvVnzl6UJS0gQmYAf0AApxbGbpT9Fdx41xtKiop96
 # eiL6SJUfq/tHI4D1nvi/a7dLl+LrdXga7Oo3mXkYS//WsyNodeav+vyL6wuA6mk7
 # r/ww7QRMjt/fdW1jkT3RnVZOT7+AVyKheBEyIXrvQQqxP/uozKRdwaGIm1dxVk5I
-# RcBCyZt2WwqASGv9eZ/BvW1taslScxMNelDNMYIVWzCCFVcCAQEwgZUwfjELMAkG
+# RcBCyZt2WwqASGv9eZ/BvW1taslScxMNelDNMYIZfzCCGXsCAQEwgZUwfjELMAkG
 # A1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1JlZG1vbmQx
 # HjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3JhdGlvbjEoMCYGA1UEAxMfTWljcm9z
-# b2Z0IENvZGUgU2lnbmluZyBQQ0EgMjAxMQITMwAAAQNeJRyZH6MeuAAAAAABAzAN
+# b2Z0IENvZGUgU2lnbmluZyBQQ0EgMjAxMQITMwAAAsyOtZamvdHJTgAAAAACzDAN
 # BglghkgBZQMEAgEFAKCBrjAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgor
-# BgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgd2oztPTf
-# DSZSDyQLlrKubArrM8W+N7hkh33Ar96SAB0wQgYKKwYBBAGCNwIBDDE0MDKgFIAS
+# BgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQge0rlDQ3P
+# +bN1Wu+fL8FyI/Be1cfUKLaxT6Us84OLyEEwQgYKKwYBBAGCNwIBDDE0MDKgFIAS
 # AE0AaQBjAHIAbwBzAG8AZgB0oRqAGGh0dHA6Ly93d3cubWljcm9zb2Z0LmNvbTAN
-# BgkqhkiG9w0BAQEFAASCAQCVTGDXbpRgqStBvN6yg1RqsUmkWnyek4CeQweQOWHw
-# M3wsyY6jwmHHHlk5pMn8ooXD8fFrY7XPxbDjnR+cWxAHVjV9Av+Y7XI+Jao4hHk9
-# +/TryGl1Ki6jzPGyn1U6FyYG4H7OOw6SshrfzuV3uS+AzVTBCfr9Jjro0GFYrkpx
-# lfHVksNydnrB2gK7qpcWY4h6TeNNkJNbz2mTe3LufNveXT9JyI75Y8P9UFc1klZc
-# +JwSDi34bksc6B4lBkhXBVaQDM9iZP3kP6MFaxbIA2cgaA0DDnj+4i7XxRqS5gx5
-# GR/cPATmPT6BBBLuUZ1JSxjV/9c6SnpXjWHcwK5DReuToYIS5TCCEuEGCisGAQQB
-# gjcDAwExghLRMIISzQYJKoZIhvcNAQcCoIISvjCCEroCAQMxDzANBglghkgBZQME
-# AgEFADCCAVEGCyqGSIb3DQEJEAEEoIIBQASCATwwggE4AgEBBgorBgEEAYRZCgMB
-# MDEwDQYJYIZIAWUDBAIBBQAEIKQpf1KXP2cegFCVFpczggxOKobnejSM7yHfbCCM
-# PrjOAgZb/gpCFBQYEzIwMTgxMjA4MDA0MTA3LjgyM1owBIACAfSggdCkgc0wgcox
-# CzAJBgNVBAYTAlVTMQswCQYDVQQIEwJXQTEQMA4GA1UEBxMHUmVkbW9uZDEeMBwG
-# A1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMS0wKwYDVQQLEyRNaWNyb3NvZnQg
-# SXJlbGFuZCBPcGVyYXRpb25zIExpbWl0ZWQxJjAkBgNVBAsTHVRoYWxlcyBUU1Mg
-# RVNOOjA4NDItNEJFNi1DMjlBMSUwIwYDVQQDExxNaWNyb3NvZnQgVGltZS1TdGFt
-# cCBzZXJ2aWNloIIOPDCCBPEwggPZoAMCAQICEzMAAADYGuTMP3oR+uEAAAAAANgw
-# DQYJKoZIhvcNAQELBQAwfDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0
-# b24xEDAOBgNVBAcTB1JlZG1vbmQxHjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3Jh
-# dGlvbjEmMCQGA1UEAxMdTWljcm9zb2Z0IFRpbWUtU3RhbXAgUENBIDIwMTAwHhcN
-# MTgwODIzMjAyNjUxWhcNMTkxMTIzMjAyNjUxWjCByjELMAkGA1UEBhMCVVMxCzAJ
-# BgNVBAgTAldBMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQg
-# Q29ycG9yYXRpb24xLTArBgNVBAsTJE1pY3Jvc29mdCBJcmVsYW5kIE9wZXJhdGlv
-# bnMgTGltaXRlZDEmMCQGA1UECxMdVGhhbGVzIFRTUyBFU046MDg0Mi00QkU2LUMy
-# OUExJTAjBgNVBAMTHE1pY3Jvc29mdCBUaW1lLVN0YW1wIHNlcnZpY2UwggEiMA0G
-# CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCUHjDkh1r1sGi48zCSTVJSLXVD5jFU
-# XiSAruKahoBAeXEFg3XtdL97JewT2vEmLeGEPSdc5norl6+e6ZohVj/88wKR+w0l
-# /AXEbbg2gM8g7XZ7UoGBBYj3fTJbNLk9BoAI4Q0+CyCLsJEUNxvXBJkX0KheXr3I
-# ptpDZoagBlk/T3UaFHmTOfG6Yce5zRJ5LHQyvE0O9RnJDJMN5DoR5/zMZX7A2FF0
-# DHXf4C/AWQQPYHQOV1fmNufxBlSwD4GFbOu1R8dL+SzNUze77HpTqg+6eLTUSsHN
-# eVr4YKzrN81vmCx6aIu5iuWwcUWxwx7TgbqGr2ddg/V49W8iu9UsMvVDAgMBAAGj
-# ggEbMIIBFzAdBgNVHQ4EFgQUn7ZWSx7uFNXfinZ6moMa55DjZuQwHwYDVR0jBBgw
-# FoAU1WM6XIoxkPNDe3xGG8UzaFqFbVUwVgYDVR0fBE8wTTBLoEmgR4ZFaHR0cDov
-# L2NybC5taWNyb3NvZnQuY29tL3BraS9jcmwvcHJvZHVjdHMvTWljVGltU3RhUENB
-# XzIwMTAtMDctMDEuY3JsMFoGCCsGAQUFBwEBBE4wTDBKBggrBgEFBQcwAoY+aHR0
-# cDovL3d3dy5taWNyb3NvZnQuY29tL3BraS9jZXJ0cy9NaWNUaW1TdGFQQ0FfMjAx
-# MC0wNy0wMS5jcnQwDAYDVR0TAQH/BAIwADATBgNVHSUEDDAKBggrBgEFBQcDCDAN
-# BgkqhkiG9w0BAQsFAAOCAQEADlJwdt7IPyC1NLe7AZze8No7Mnd84D5SMHfxiRpL
-# eOYXz+bgZ+I/b8Bn6bCg2XoS7UKbf0aeouUqu/TckDsOC6+fko0uW1LpOROUpCvc
-# 9WTGv0VXj/oJAuXZRJTR3qeZHOgiYZ0qCyJShOyIImJKb43Ygz4t0k/JA0q5E+z2
-# W/D2nKDVV+zTnK8SnROQ55WKeoJq9pBcJjd1nf7HvYd1MlyFhF3OwdCPFrM/Ftsc
-# LO6GKVBivXpe03K9I2KsogJh27sCKXd07TN1hqUOVM54sVJbZofPnJEwig+NOhYS
-# RijhS4T/fRa1VcLQ2rwhNMyQc9U++Q+W3+I2K8aDm0lOsTCCBnEwggRZoAMCAQIC
-# CmEJgSoAAAAAAAIwDQYJKoZIhvcNAQELBQAwgYgxCzAJBgNVBAYTAlVTMRMwEQYD
-# VQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNy
-# b3NvZnQgQ29ycG9yYXRpb24xMjAwBgNVBAMTKU1pY3Jvc29mdCBSb290IENlcnRp
-# ZmljYXRlIEF1dGhvcml0eSAyMDEwMB4XDTEwMDcwMTIxMzY1NVoXDTI1MDcwMTIx
-# NDY1NVowfDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNV
-# BAcTB1JlZG1vbmQxHjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3JhdGlvbjEmMCQG
-# A1UEAxMdTWljcm9zb2Z0IFRpbWUtU3RhbXAgUENBIDIwMTAwggEiMA0GCSqGSIb3
-# DQEBAQUAA4IBDwAwggEKAoIBAQCpHQ28dxGKOiDs/BOX9fp/aZRrdFQQ1aUKAIKF
-# ++18aEssX8XD5WHCdrc+Zitb8BVTJwQxH0EbGpUdzgkTjnxhMFmxMEQP8WCIhFRD
-# DNdNuDgIs0Ldk6zWczBXJoKjRQ3Q6vVHgc2/JGAyWGBG8lhHhjKEHnRhZ5FfgVSx
-# z5NMksHEpl3RYRNuKMYa+YaAu99h/EbBJx0kZxJyGiGKr0tkiVBisV39dx898Fd1
-# rL2KQk1AUdEPnAY+Z3/1ZsADlkR+79BL/W7lmsqxqPJ6Kgox8NpOBpG2iAg16Hgc
-# sOmZzTznL0S6p/TcZL2kAcEgCZN4zfy8wMlEXV4WnAEFTyJNAgMBAAGjggHmMIIB
-# 4jAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQU1WM6XIoxkPNDe3xGG8UzaFqF
-# bVUwGQYJKwYBBAGCNxQCBAweCgBTAHUAYgBDAEEwCwYDVR0PBAQDAgGGMA8GA1Ud
-# EwEB/wQFMAMBAf8wHwYDVR0jBBgwFoAU1fZWy4/oolxiaNE9lJBb186aGMQwVgYD
-# VR0fBE8wTTBLoEmgR4ZFaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraS9jcmwv
-# cHJvZHVjdHMvTWljUm9vQ2VyQXV0XzIwMTAtMDYtMjMuY3JsMFoGCCsGAQUFBwEB
-# BE4wTDBKBggrBgEFBQcwAoY+aHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraS9j
-# ZXJ0cy9NaWNSb29DZXJBdXRfMjAxMC0wNi0yMy5jcnQwgaAGA1UdIAEB/wSBlTCB
-# kjCBjwYJKwYBBAGCNy4DMIGBMD0GCCsGAQUFBwIBFjFodHRwOi8vd3d3Lm1pY3Jv
-# c29mdC5jb20vUEtJL2RvY3MvQ1BTL2RlZmF1bHQuaHRtMEAGCCsGAQUFBwICMDQe
-# MiAdAEwAZQBnAGEAbABfAFAAbwBsAGkAYwB5AF8AUwB0AGEAdABlAG0AZQBuAHQA
-# LiAdMA0GCSqGSIb3DQEBCwUAA4ICAQAH5ohRDeLG4Jg/gXEDPZ2joSFvs+umzPUx
-# vs8F4qn++ldtGTCzwsVmyWrf9efweL3HqJ4l4/m87WtUVwgrUYJEEvu5U4zM9GAS
-# inbMQEBBm9xcF/9c+V4XNZgkVkt070IQyK+/f8Z/8jd9Wj8c8pl5SpFSAK84Dxf1
-# L3mBZdmptWvkx872ynoAb0swRCQiPM/tA6WWj1kpvLb9BOFwnzJKJ/1Vry/+tuWO
-# M7tiX5rbV0Dp8c6ZZpCM/2pif93FSguRJuI57BlKcWOdeyFtw5yjojz6f32WapB4
-# pm3S4Zz5Hfw42JT0xqUKloakvZ4argRCg7i1gJsiOCC1JeVk7Pf0v35jWSUPei45
-# V3aicaoGig+JFrphpxHLmtgOR5qAxdDNp9DvfYPw4TtxCd9ddJgiCGHasFAeb73x
-# 4QDf5zEHpJM692VHeOj4qEir995yfmFrb3epgcunCaw5u+zGy9iCtHLNHfS4hQEe
-# gPsbiSpUObJb2sgNVZl6h3M7COaYLeqN4DMuEin1wC9UJyH3yKxO2ii4sanblrKn
-# QqLJzxlBTeCG+SqaoxFmMNO7dDJL32N79ZmKLxvHIa9Zta7cRDyXUHHXodLFVeNp
-# 3lfB0d4wwP3M5k37Db9dT+mdHhk4L7zPWAUu7w2gUDXa7wknHNWzfjUeCLraNtvT
-# X4/edIhJEqGCAs4wggI3AgEBMIH4oYHQpIHNMIHKMQswCQYDVQQGEwJVUzELMAkG
-# A1UECBMCV0ExEDAOBgNVBAcTB1JlZG1vbmQxHjAcBgNVBAoTFU1pY3Jvc29mdCBD
-# b3Jwb3JhdGlvbjEtMCsGA1UECxMkTWljcm9zb2Z0IElyZWxhbmQgT3BlcmF0aW9u
-# cyBMaW1pdGVkMSYwJAYDVQQLEx1UaGFsZXMgVFNTIEVTTjowODQyLTRCRTYtQzI5
-# QTElMCMGA1UEAxMcTWljcm9zb2Z0IFRpbWUtU3RhbXAgc2VydmljZaIjCgEBMAcG
-# BSsOAwIaAxUAZTHB3RFeHZDsjSiiSRUIWWArIoGggYMwgYCkfjB8MQswCQYDVQQG
-# EwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwG
-# A1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMSYwJAYDVQQDEx1NaWNyb3NvZnQg
-# VGltZS1TdGFtcCBQQ0EgMjAxMDANBgkqhkiG9w0BAQUFAAIFAN+1DtowIhgPMjAx
-# ODEyMDcyMzIzMDZaGA8yMDE4MTIwODIzMjMwNlowdzA9BgorBgEEAYRZCgQBMS8w
-# LTAKAgUA37UO2gIBADAKAgEAAgIprQIB/zAHAgEAAgIRWjAKAgUA37ZgWgIBADA2
-# BgorBgEEAYRZCgQCMSgwJjAMBgorBgEEAYRZCgMCoAowCAIBAAIDB6EgoQowCAIB
-# AAIDAYagMA0GCSqGSIb3DQEBBQUAA4GBAC2PYW1XxHKqdSn/+5ootR+ycu8P8lX6
-# 43YzsO5xOVgVtrrQYgw3oFGvkVTvfeeK5l4bJMyNtEjpj3a7Em5pUFAgOgu5OoF7
-# zESvrKQmVLjTD4rtZkaGdoZCgpTQZvxi7Pq14HMfugfGjAhnyBAC6uge1MXdRxlx
-# SV7OUxkLiOUsMYIDDTCCAwkCAQEwgZMwfDELMAkGA1UEBhMCVVMxEzARBgNVBAgT
-# Cldhc2hpbmd0b24xEDAOBgNVBAcTB1JlZG1vbmQxHjAcBgNVBAoTFU1pY3Jvc29m
-# dCBDb3Jwb3JhdGlvbjEmMCQGA1UEAxMdTWljcm9zb2Z0IFRpbWUtU3RhbXAgUENB
-# IDIwMTACEzMAAADYGuTMP3oR+uEAAAAAANgwDQYJYIZIAWUDBAIBBQCgggFKMBoG
-# CSqGSIb3DQEJAzENBgsqhkiG9w0BCRABBDAvBgkqhkiG9w0BCQQxIgQgAQ4lESfX
-# gQ5KVQBz00DrFiX3eN6QBEWN09LxBGhUqIIwgfoGCyqGSIb3DQEJEAIvMYHqMIHn
-# MIHkMIG9BCBzO53HeFzo83Yp/++Elao9KUDRbwoE/yBrzBOfQS7YLTCBmDCBgKR+
-# MHwxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdS
-# ZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xJjAkBgNVBAMT
-# HU1pY3Jvc29mdCBUaW1lLVN0YW1wIFBDQSAyMDEwAhMzAAAA2BrkzD96EfrhAAAA
-# AADYMCIEIBtI7mRlbLeOmZM1AQC8VSkMIk+xNNLt4ApBnDrbc9kuMA0GCSqGSIb3
-# DQEBCwUABIIBAAhHccu3il/sOZkUux5BMuxxAeVCb2W2a/0B6JI151AkRwICt4cy
-# Hfdbl5Zww95f69QueGTwy2OoClFovjljNckil4eG4ufogLEoQcQa7EPfd1ZQpo79
-# TJRQdOUyEBtVYC1ai7qnu/op5LDt6rKCGm3EBl+ELYuX4v903tSU8AMSzCnZJ6NQ
-# tZgltSeFfB9/Bd970sfUGCU91lhhLcPUn9umohlbp02S3oacV3Rjt4it0hD5Is5r
-# VprXTkyUP9q7XjhOcH/9KPRVgzf9T6j1f6jSgdSCFN6AKEP9mR9iqsur9YN2INw1
-# LVjRVQPJS6vUz9p2tENeQE12mAAB862ue24=
+# BgkqhkiG9w0BAQEFAASCAQBBWthBkqOMvsRpx9NlcWdh1Ms+Plj/vvxCOU+50hFu
+# N6T+VGLbR+ee4UCyuYtuFxFhq5i4cixfhg7On4F0rk8YvEkYqu4NYffInl5H3Pl/
+# p8OewMpv3Bhjrmcbce3dduFPVsdbrz1+Jbubxam9Ghi1USfVAkKIiAf3xx2JG/gg
+# J38l4yX7vEY8T4gT9hSPX98WSm4TNhMluvb7hSxJ6dMlXJUUa/B3qyQMfYrttEw8
+# iHOH+AmUBwdg+Yo022yCBCngwMDYenIPss7ROMg3pZFpk4U9GI0e0ZW1nAB7hMZj
+# p5YtfXAauCC4eCfC7rFD9Ne5NnCBfhHpxHHYrkDfOjdCoYIXCTCCFwUGCisGAQQB
+# gjcDAwExghb1MIIW8QYJKoZIhvcNAQcCoIIW4jCCFt4CAQMxDzANBglghkgBZQME
+# AgEFADCCAVUGCyqGSIb3DQEJEAEEoIIBRASCAUAwggE8AgEBBgorBgEEAYRZCgMB
+# MDEwDQYJYIZIAWUDBAIBBQAEIKw6uDYgp3cxNhnP51nsG3gi0cOvitnGAHOeC8ab
+# o+9LAgZjxowambMYEzIwMjMwMjAyMjIwNjU0LjEyOFowBIACAfSggdSkgdEwgc4x
+# CzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRt
+# b25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xKTAnBgNVBAsTIE1p
+# Y3Jvc29mdCBPcGVyYXRpb25zIFB1ZXJ0byBSaWNvMSYwJAYDVQQLEx1UaGFsZXMg
+# VFNTIEVTTjpDNEJELUUzN0YtNUZGQzElMCMGA1UEAxMcTWljcm9zb2Z0IFRpbWUt
+# U3RhbXAgU2VydmljZaCCEVwwggcQMIIE+KADAgECAhMzAAABo/uas457hkNPAAEA
+# AAGjMA0GCSqGSIb3DQEBCwUAMHwxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNo
+# aW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29y
+# cG9yYXRpb24xJjAkBgNVBAMTHU1pY3Jvc29mdCBUaW1lLVN0YW1wIFBDQSAyMDEw
+# MB4XDTIyMDMwMjE4NTExNloXDTIzMDUxMTE4NTExNlowgc4xCzAJBgNVBAYTAlVT
+# MRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQK
+# ExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xKTAnBgNVBAsTIE1pY3Jvc29mdCBPcGVy
+# YXRpb25zIFB1ZXJ0byBSaWNvMSYwJAYDVQQLEx1UaGFsZXMgVFNTIEVTTjpDNEJE
+# LUUzN0YtNUZGQzElMCMGA1UEAxMcTWljcm9zb2Z0IFRpbWUtU3RhbXAgU2Vydmlj
+# ZTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAO+9TcrLeyoKcCqLbNtz
+# 7Nt2JbP1TEzzMhi84gS6YLI7CF6dVSA5I1bFCHcw6ZF2eF8Qiaf0o2XSXf/jp5sg
+# mUYtMbGi4neAtWSNK5yht4iyQhBxn0TIQqF+NisiBxW+ehMYWEbFI+7cSdX/dWw+
+# /Y8/Mu9uq3XCK5P2G+ZibVwOVH95+IiTGnmocxWgds0qlBpa1rYg3bl8XVe5L2qT
+# UmJBvnQpx2bUru70lt2/HoU5bBbLKAhCPpxy4nmsrdOR3Gv4UbfAmtpQntP758NR
+# Phg1bACH06FlvbIyP8/uRs3x2323daaGpJQYQoZpABg62rFDTJ4+e06tt+xbfvp8
+# M9lo8a1agfxZQ1pIT1VnJdaO98gWMiMW65deFUiUR+WngQVfv2gLsv6o7+Ocpzy6
+# RHZIm6WEGZ9LBt571NfCsx5z0Ilvr6SzN0QbaWJTLIWbXwbUVKYebrXEVFMyhuVG
+# QHesZB+VwV386hYonMxs0jvM8GpOcx0xLyym42XA99VSpsuivTJg4o8a1ACJbTBV
+# FoEA3VrFSYzOdQ6vzXxrxw6i/T138m+XF+yKtAEnhp+UeAMhlw7jP99EAlgGUl0K
+# kcBjTYTz+jEyPgKadrU1of5oFi/q9YDlrVv9H4JsVe8GHMOkPTNoB4028j88OEe4
+# 26BsfcXLki0phPp7irW0AbRdAgMBAAGjggE2MIIBMjAdBgNVHQ4EFgQUUFH7szwm
+# CLHPTS9Bo2irLnJji6owHwYDVR0jBBgwFoAUn6cVXQBeYl2D9OXSZacbUzUZ6XIw
+# XwYDVR0fBFgwVjBUoFKgUIZOaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w
+# cy9jcmwvTWljcm9zb2Z0JTIwVGltZS1TdGFtcCUyMFBDQSUyMDIwMTAoMSkuY3Js
+# MGwGCCsGAQUFBwEBBGAwXjBcBggrBgEFBQcwAoZQaHR0cDovL3d3dy5taWNyb3Nv
+# ZnQuY29tL3BraW9wcy9jZXJ0cy9NaWNyb3NvZnQlMjBUaW1lLVN0YW1wJTIwUENB
+# JTIwMjAxMCgxKS5jcnQwDAYDVR0TAQH/BAIwADATBgNVHSUEDDAKBggrBgEFBQcD
+# CDANBgkqhkiG9w0BAQsFAAOCAgEAWvLep2mXw6iuBxGu0PsstmXI5gLmgPkTKQnj
+# gZlsoeipsta9oku0MTVxlHVdcdBbFcVHMLRRkUFIkfKnaclyl5eyj03weD6b/pUf
+# FyDZB8AZpGUXhTYLNR8PepM6yD6g+0E1nH0MhOGoE6XFufkbn6eIdNTGuWwBeEr2
+# DNiGhDGlwaUH5ELz3htuyMyWKAgYF28C4iyyhYdvlG9VN6JnC4mc/EIt50BCHp8Z
+# QAk7HC3ROltg1gu5NjGaSVdisai5OJWf6e5sYQdDBNYKXJdiHei1N7K+L5s1vV+C
+# 6d3TsF9+ANpioBDAOGnFSYt4P+utW11i37iLLLb926pCL4Ly++GU0wlzYfn7n22R
+# yQmvD11oyiZHhmRssDBqsA+nvCVtfnH183Df5oBBVskzZcJTUjCxaagDK7AqB6QA
+# 3H7l/2SFeeqfX/Dtdle4B+vPV4lq1CCs0A1LB9lmzS0vxoRDusY80DQi10K3SfZK
+# 1hyyaj9a8pbZG0BsBp2Nwc4xtODEeBTWoAzF9ko4V6d09uFFpJrLoV+e8cJU/hT3
+# +SlW7dnr5dtYvziHTpZuuRv4KU6F3OQzNpHf7cBLpWKRXRjGYdVnAGb8NzW6wWTj
+# ZjMCNdCFG7pkKLMOGdqPDFdfk+EYE5RSG9yxS76cPfXqRKVtJZScIF64ejnXbFIs
+# 5bh8KwEwggdxMIIFWaADAgECAhMzAAAAFcXna54Cm0mZAAAAAAAVMA0GCSqGSIb3
+# DQEBCwUAMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4G
+# A1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTIw
+# MAYDVQQDEylNaWNyb3NvZnQgUm9vdCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkgMjAx
+# MDAeFw0yMTA5MzAxODIyMjVaFw0zMDA5MzAxODMyMjVaMHwxCzAJBgNVBAYTAlVT
+# MRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQK
+# ExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xJjAkBgNVBAMTHU1pY3Jvc29mdCBUaW1l
+# LVN0YW1wIFBDQSAyMDEwMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA
+# 5OGmTOe0ciELeaLL1yR5vQ7VgtP97pwHB9KpbE51yMo1V/YBf2xK4OK9uT4XYDP/
+# XE/HZveVU3Fa4n5KWv64NmeFRiMMtY0Tz3cywBAY6GB9alKDRLemjkZrBxTzxXb1
+# hlDcwUTIcVxRMTegCjhuje3XD9gmU3w5YQJ6xKr9cmmvHaus9ja+NSZk2pg7uhp7
+# M62AW36MEBydUv626GIl3GoPz130/o5Tz9bshVZN7928jaTjkY+yOSxRnOlwaQ3K
+# Ni1wjjHINSi947SHJMPgyY9+tVSP3PoFVZhtaDuaRr3tpK56KTesy+uDRedGbsoy
+# 1cCGMFxPLOJiss254o2I5JasAUq7vnGpF1tnYN74kpEeHT39IM9zfUGaRnXNxF80
+# 3RKJ1v2lIH1+/NmeRd+2ci/bfV+AutuqfjbsNkz2K26oElHovwUDo9Fzpk03dJQc
+# NIIP8BDyt0cY7afomXw/TNuvXsLz1dhzPUNOwTM5TI4CvEJoLhDqhFFG4tG9ahha
+# YQFzymeiXtcodgLiMxhy16cg8ML6EgrXY28MyTZki1ugpoMhXV8wdJGUlNi5UPkL
+# iWHzNgY1GIRH29wb0f2y1BzFa/ZcUlFdEtsluq9QBXpsxREdcu+N+VLEhReTwDwV
+# 2xo3xwgVGD94q0W29R6HXtqPnhZyacaue7e3PmriLq0CAwEAAaOCAd0wggHZMBIG
+# CSsGAQQBgjcVAQQFAgMBAAEwIwYJKwYBBAGCNxUCBBYEFCqnUv5kxJq+gpE8RjUp
+# zxD/LwTuMB0GA1UdDgQWBBSfpxVdAF5iXYP05dJlpxtTNRnpcjBcBgNVHSAEVTBT
+# MFEGDCsGAQQBgjdMg30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jv
+# c29mdC5jb20vcGtpb3BzL0RvY3MvUmVwb3NpdG9yeS5odG0wEwYDVR0lBAwwCgYI
+# KwYBBQUHAwgwGQYJKwYBBAGCNxQCBAweCgBTAHUAYgBDAEEwCwYDVR0PBAQDAgGG
+# MA8GA1UdEwEB/wQFMAMBAf8wHwYDVR0jBBgwFoAU1fZWy4/oolxiaNE9lJBb186a
+# GMQwVgYDVR0fBE8wTTBLoEmgR4ZFaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3Br
+# aS9jcmwvcHJvZHVjdHMvTWljUm9vQ2VyQXV0XzIwMTAtMDYtMjMuY3JsMFoGCCsG
+# AQUFBwEBBE4wTDBKBggrBgEFBQcwAoY+aHR0cDovL3d3dy5taWNyb3NvZnQuY29t
+# L3BraS9jZXJ0cy9NaWNSb29DZXJBdXRfMjAxMC0wNi0yMy5jcnQwDQYJKoZIhvcN
+# AQELBQADggIBAJ1VffwqreEsH2cBMSRb4Z5yS/ypb+pcFLY+TkdkeLEGk5c9MTO1
+# OdfCcTY/2mRsfNB1OW27DzHkwo/7bNGhlBgi7ulmZzpTTd2YurYeeNg2LpypglYA
+# A7AFvonoaeC6Ce5732pvvinLbtg/SHUB2RjebYIM9W0jVOR4U3UkV7ndn/OOPcbz
+# aN9l9qRWqveVtihVJ9AkvUCgvxm2EhIRXT0n4ECWOKz3+SmJw7wXsFSFQrP8DJ6L
+# GYnn8AtqgcKBGUIZUnWKNsIdw2FzLixre24/LAl4FOmRsqlb30mjdAy87JGA0j3m
+# Sj5mO0+7hvoyGtmW9I/2kQH2zsZ0/fZMcm8Qq3UwxTSwethQ/gpY3UA8x1RtnWN0
+# SCyxTkctwRQEcb9k+SS+c23Kjgm9swFXSVRk2XPXfx5bRAGOWhmRaw2fpCjcZxko
+# JLo4S5pu+yFUa2pFEUep8beuyOiJXk+d0tBMdrVXVAmxaQFEfnyhYWxz/gq77EFm
+# PWn9y8FBSX5+k77L+DvktxW/tM4+pTFRhLy/AsGConsXHRWJjXD+57XQKBqJC482
+# 2rpM+Zv/Cuk0+CQ1ZyvgDbjmjJnW4SLq8CdCPSWU5nR0W2rRnj7tfqAxM328y+l7
+# vzhwRNGQ8cirOoo6CGJ/2XBjU02N7oJtpQUQwXEGahC0HVUzWLOhcGbyoYICzzCC
+# AjgCAQEwgfyhgdSkgdEwgc4xCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5n
+# dG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9y
+# YXRpb24xKTAnBgNVBAsTIE1pY3Jvc29mdCBPcGVyYXRpb25zIFB1ZXJ0byBSaWNv
+# MSYwJAYDVQQLEx1UaGFsZXMgVFNTIEVTTjpDNEJELUUzN0YtNUZGQzElMCMGA1UE
+# AxMcTWljcm9zb2Z0IFRpbWUtU3RhbXAgU2VydmljZaIjCgEBMAcGBSsOAwIaAxUA
+# Hl/pXkLMAbPapCwa+GXc3SlDDROggYMwgYCkfjB8MQswCQYDVQQGEwJVUzETMBEG
+# A1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWlj
+# cm9zb2Z0IENvcnBvcmF0aW9uMSYwJAYDVQQDEx1NaWNyb3NvZnQgVGltZS1TdGFt
+# cCBQQ0EgMjAxMDANBgkqhkiG9w0BAQUFAAIFAOeGIbkwIhgPMjAyMzAyMDIxNTQ5
+# MTNaGA8yMDIzMDIwMzE1NDkxM1owdDA6BgorBgEEAYRZCgQBMSwwKjAKAgUA54Yh
+# uQIBADAHAgEAAgIRkzAHAgEAAgISXDAKAgUA54dzOQIBADA2BgorBgEEAYRZCgQC
+# MSgwJjAMBgorBgEEAYRZCgMCoAowCAIBAAIDB6EgoQowCAIBAAIDAYagMA0GCSqG
+# SIb3DQEBBQUAA4GBAEefh2AIg/xP18CflW8EUUogPqDRqysNTl8NofAI0/TsAKnC
+# bmMszdCYJKAolAoY3nbYk0QjSAfZQT8yrVlCyNdd0I9YtjuInedRgIF0DIZqt+0T
+# JYzY/RdBYRtJpv3EmIcQCWsm7GcYjh15mMRonG8NWZF8q6yC9zKS5Ea2aF55MYIE
+# DTCCBAkCAQEwgZMwfDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24x
+# EDAOBgNVBAcTB1JlZG1vbmQxHjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3JhdGlv
+# bjEmMCQGA1UEAxMdTWljcm9zb2Z0IFRpbWUtU3RhbXAgUENBIDIwMTACEzMAAAGj
+# +5qzjnuGQ08AAQAAAaMwDQYJYIZIAWUDBAIBBQCgggFKMBoGCSqGSIb3DQEJAzEN
+# BgsqhkiG9w0BCRABBDAvBgkqhkiG9w0BCQQxIgQgpBP/+vP6XFLyeJVZbI+hze7S
+# OVHn01tQpf8bwgPORrkwgfoGCyqGSIb3DQEJEAIvMYHqMIHnMIHkMIG9BCCM+Liw
+# BnHMMoOd/sgbaYxpwvEJlREZl/pTPklz6euN/jCBmDCBgKR+MHwxCzAJBgNVBAYT
+# AlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYD
+# VQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xJjAkBgNVBAMTHU1pY3Jvc29mdCBU
+# aW1lLVN0YW1wIFBDQSAyMDEwAhMzAAABo/uas457hkNPAAEAAAGjMCIEIDxHkWoq
+# 5ARhybyVFy04xcQR22kXtmwZ3QENjotLhqWmMA0GCSqGSIb3DQEBCwUABIICAHlw
+# 0Xb/w7c+ZsehkdLuJPVVCV2kJrGoL7X7j4qreNYHE23mmEmKVFmZ4TLAjARi2kpz
+# GwNAokZYrSdoEOfk4JLwgjwImJ5Q705R4FpkJafNnrRBjO3lVnRXAW8IQ7rTxKP4
+# ICuZ7B+w7ol8AuKBU9H8FGHVkDGJmP2Q2rK5987y6MlnwMgMhgDdrL74Mjbu4Bvy
+# J1KH/KhAExcb4+wPZT5gy9h/xtXuId8yGfTZOVtDjBt+OU1CQjtrBYp8SHzwcXff
+# ZHovI+3v/63hGYw4snawxhrVn19j7Q4um3KT7OVazxpIj9Ey+kq+agsE1VyCEd4l
+# WUhKWwRppXUVLPkLdeYXW1VpmOYGfnl2PLLQOg4lz1jKVcrsPyLAfJWlxo/nL3JM
+# mTQQ0NqcVkkT+s9y+sgIvDIHU5RneGKmGC/Xd7Sk5D20V4lpd2AU3Ys1Ss+mbS6Q
+# mB8cDQ75E2M5qCt6mNolRw/I+uUfP54UkRWMqfpRwGLAWQrF9QWxU5/VO5LYnuWt
+# 2BiW9sSqLb9ltzB+COT5ALjCZ7/oqgTD/n949tBGmztAZv15/Rfb3T1bHRwSRp8B
+# 2MNRurIsBXFcbqH65/3jSTrYW7mBltcRlYidHD8QNQn03piWYb5PB+9I69OzXREd
+# AkpAiIkaHVWhOfxI/Eg29vVvUd6ySKRKrcRYP1Rf
 # SIG # End signature block

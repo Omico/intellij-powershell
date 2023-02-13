@@ -17,9 +17,9 @@
         <maml:name>ConvertFrom-ScriptExtent</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="named" aliases="none">
           <maml:name>Extent</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the extent to be converted.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">IScriptExtent[]</command:parameterValue>
           <dev:type>
             <maml:name>IScriptExtent[]</maml:name>
@@ -29,9 +29,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>BufferRange</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>If specified will convert extents to BufferRange objects.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -43,9 +43,9 @@
         <maml:name>ConvertFrom-ScriptExtent</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="named" aliases="none">
           <maml:name>Extent</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the extent to be converted.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">IScriptExtent[]</command:parameterValue>
           <dev:type>
             <maml:name>IScriptExtent[]</maml:name>
@@ -55,9 +55,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>BufferPosition</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>If specified will convert extents to BufferPosition objects.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -66,9 +66,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Start</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies to use the start of the extent when converting to types with no range. This is the default.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -77,9 +77,9 @@
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>End</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies to use the end of the extent when converting to types with no range.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -91,9 +91,9 @@
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="named" aliases="none">
         <maml:name>Extent</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the extent to be converted.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">IScriptExtent[]</command:parameterValue>
         <dev:type>
           <maml:name>IScriptExtent[]</maml:name>
@@ -103,9 +103,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>BufferRange</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>If specified will convert extents to BufferRange objects.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -115,9 +115,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>BufferPosition</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>If specified will convert extents to BufferPosition objects.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -127,9 +127,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Start</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies to use the start of the extent when converting to types with no range. This is the default.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -139,9 +139,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>End</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies to use the end of the extent when converting to types with no range.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -198,7 +198,7 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/master/module/docs/ConvertFrom-ScriptExtent.md</maml:uri>
+        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/main/module/docs/ConvertFrom-ScriptExtent.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>ConvertTo-ScriptExtent</maml:linkText>
@@ -235,9 +235,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         <maml:name>ConvertTo-ScriptExtent</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
           <maml:name>Extent</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies a ScriptExtent object to use as a base to create a new editor context aware ScriptExtent object.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
           <dev:type>
             <maml:name>IScriptExtent</maml:name>
@@ -250,9 +250,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         <maml:name>ConvertTo-ScriptExtent</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="StartLine, Line">
           <maml:name>StartLineNumber</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the starting line number.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -262,9 +262,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="StartColumn, Column">
           <maml:name>StartColumnNumber</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the starting column number.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -274,9 +274,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="EndLine">
           <maml:name>EndLineNumber</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the ending line number.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -286,9 +286,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="EndColumn">
           <maml:name>EndColumnNumber</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the ending column number.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -298,9 +298,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="File, FileName">
           <maml:name>FilePath</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the path of the source script file.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -313,9 +313,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         <maml:name>ConvertTo-ScriptExtent</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="StartOffset, Offset">
           <maml:name>StartOffsetNumber</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the starting offset number.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -325,9 +325,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="EndOffset">
           <maml:name>EndOffsetNumber</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the ending offset number.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -337,9 +337,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="File, FileName">
           <maml:name>FilePath</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the path of the source script file.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -352,9 +352,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         <maml:name>ConvertTo-ScriptExtent</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="File, FileName">
           <maml:name>FilePath</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the path of the source script file.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -364,9 +364,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="Start">
           <maml:name>StartBuffer</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the starting buffer position.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">BufferPosition</command:parameterValue>
           <dev:type>
             <maml:name>BufferPosition</maml:name>
@@ -376,9 +376,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="End">
           <maml:name>EndBuffer</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the ending buffer position.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">BufferPosition</command:parameterValue>
           <dev:type>
             <maml:name>BufferPosition</maml:name>
@@ -391,9 +391,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
         <maml:name>Extent</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies a ScriptExtent object to use as a base to create a new editor context aware ScriptExtent object.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
         <dev:type>
           <maml:name>IScriptExtent</maml:name>
@@ -403,9 +403,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="StartLine, Line">
         <maml:name>StartLineNumber</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the starting line number.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
           <maml:name>Int32</maml:name>
@@ -415,9 +415,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="StartColumn, Column">
         <maml:name>StartColumnNumber</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the starting column number.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
           <maml:name>Int32</maml:name>
@@ -427,9 +427,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="EndLine">
         <maml:name>EndLineNumber</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the ending line number.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
           <maml:name>Int32</maml:name>
@@ -439,9 +439,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="EndColumn">
         <maml:name>EndColumnNumber</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the ending column number.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
           <maml:name>Int32</maml:name>
@@ -451,9 +451,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="StartOffset, Offset">
         <maml:name>StartOffsetNumber</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the starting offset number.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
           <maml:name>Int32</maml:name>
@@ -463,9 +463,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="EndOffset">
         <maml:name>EndOffsetNumber</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the ending offset number.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
           <maml:name>Int32</maml:name>
@@ -475,9 +475,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="File, FileName">
         <maml:name>FilePath</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the path of the source script file.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -487,9 +487,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="Start">
         <maml:name>StartBuffer</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the starting buffer position.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">BufferPosition</command:parameterValue>
         <dev:type>
           <maml:name>BufferPosition</maml:name>
@@ -499,9 +499,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="End">
         <maml:name>EndBuffer</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the ending buffer position.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">BufferPosition</command:parameterValue>
         <dev:type>
           <maml:name>BufferPosition</maml:name>
@@ -556,7 +556,7 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/master/module/docs/ConvertTo-ScriptExtent.md</maml:uri>
+        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/main/module/docs/ConvertTo-ScriptExtent.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>ConvertFrom-ScriptExtent</maml:linkText>
@@ -586,18 +586,18 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Find-Ast function can be used to easily find a specific AST within a script file. All ASTs following the inital starting ast will be searched, including those that are not part of the same tree.</maml:para>
+      <maml:para>The Find-Ast function can be used to easily find a specific AST within a script file. All ASTs following the initial starting AST will be searched, including those that are not part of the same tree.</maml:para>
       <maml:para>The behavior of the search (such as direction and criteria) can be changed with parameters.</maml:para>
-      <maml:para>Additionally, you can find the Ast closest to the cursor with the "AtCursor" switch parameter.</maml:para>
+      <maml:para>Additionally, you can find the AST closest to the cursor with the "AtCursor" switch parameter.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Find-Ast</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>FilterScript</maml:name>
-          <maml:Description>
-            <maml:para>Specifies a ScriptBlock that returns $true if an AST should be returned. Uses $PSItem and $_ like Where-Object. If not specified all ASTs will be returned.</maml:para>
-          </maml:Description>
+          <maml:description>
+            <maml:para>Specifies a script block that returns $true if an AST should be returned. Uses $PSItem and $_ like Where-Object. If not specified all ASTs will be returned.</maml:para>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">ScriptBlock</command:parameterValue>
           <dev:type>
             <maml:name>ScriptBlock</maml:name>
@@ -607,9 +607,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="named" aliases="none">
           <maml:name>Ast</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the starting AST. The default is the AST of the current file in PowerShell Editor Services.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Ast</command:parameterValue>
           <dev:type>
             <maml:name>Ast</maml:name>
@@ -619,9 +619,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Before</maml:name>
-          <maml:Description>
-            <maml:para>If specified the direction of the search will be reversed.</maml:para>
-          </maml:Description>
+          <maml:description>
+            <maml:para>Specifies the direction of the search will be reversed.</maml:para>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -630,9 +630,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Family</maml:name>
-          <maml:Description>
-            <maml:para>If specified only children of the starting AST will be searched. If specified with the "Before" parameter then only ancestors will be searched.</maml:para>
-          </maml:Description>
+          <maml:description>
+            <maml:para>Searches only children of the starting AST. When used with the "Before" parameter then only ancestors will be searched.</maml:para>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -641,9 +641,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Closest, F">
           <maml:name>First</maml:name>
-          <maml:Description>
-            <maml:para>If specified will return only the first result. This will be the closest AST that matches.</maml:para>
-          </maml:Description>
+          <maml:description>
+            <maml:para>Returns only the first result. This will be the closest AST that matches.</maml:para>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -652,9 +652,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Furthest">
           <maml:name>Last</maml:name>
-          <maml:Description>
-            <maml:para>If specified will return only the last result. This will be the furthest AST that matches.</maml:para>
-          </maml:Description>
+          <maml:description>
+            <maml:para>Returns only the last result. This will be the furthest AST that matches.</maml:para>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -663,9 +663,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Parent">
           <maml:name>Ancestor</maml:name>
-          <maml:Description>
-            <maml:para>If specified will only search ancestors of the starting AST.  This is a convenience parameter that acts the same as the "Family" and "Before" parameters when used together.</maml:para>
-          </maml:Description>
+          <maml:description>
+            <maml:para>Searches only ancestors of the starting AST. This is a convenience parameter that acts the same as the "Family" and "Before" parameters when used together.</maml:para>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -674,9 +674,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>IncludeStartingAst</maml:name>
-          <maml:Description>
-            <maml:para>If specified the starting AST will be included if matched.</maml:para>
-          </maml:Description>
+          <maml:description>
+            <maml:para>Specifies the starting AST will be included if matched.</maml:para>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -688,9 +688,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         <maml:name>Find-Ast</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>AtCursor</maml:name>
-          <maml:Description>
-            <maml:para>If specified, this function will return the smallest AST that the cursor is within.</maml:para>
-          </maml:Description>
+          <maml:description>
+            <maml:para>Returns the smallest AST that the cursor is within.</maml:para>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -702,9 +702,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>FilterScript</maml:name>
-        <maml:Description>
-          <maml:para>Specifies a ScriptBlock that returns $true if an AST should be returned. Uses $PSItem and $_ like Where-Object. If not specified all ASTs will be returned.</maml:para>
-        </maml:Description>
+        <maml:description>
+          <maml:para>Specifies a script block that returns $true if an AST should be returned. Uses $PSItem and $_ like Where-Object. If not specified all ASTs will be returned.</maml:para>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">ScriptBlock</command:parameterValue>
         <dev:type>
           <maml:name>ScriptBlock</maml:name>
@@ -714,9 +714,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="named" aliases="none">
         <maml:name>Ast</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the starting AST. The default is the AST of the current file in PowerShell Editor Services.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Ast</command:parameterValue>
         <dev:type>
           <maml:name>Ast</maml:name>
@@ -726,9 +726,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Before</maml:name>
-        <maml:Description>
-          <maml:para>If specified the direction of the search will be reversed.</maml:para>
-        </maml:Description>
+        <maml:description>
+          <maml:para>Specifies the direction of the search will be reversed.</maml:para>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -738,9 +738,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Family</maml:name>
-        <maml:Description>
-          <maml:para>If specified only children of the starting AST will be searched. If specified with the "Before" parameter then only ancestors will be searched.</maml:para>
-        </maml:Description>
+        <maml:description>
+          <maml:para>Searches only children of the starting AST. When used with the "Before" parameter then only ancestors will be searched.</maml:para>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -750,9 +750,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Closest, F">
         <maml:name>First</maml:name>
-        <maml:Description>
-          <maml:para>If specified will return only the first result. This will be the closest AST that matches.</maml:para>
-        </maml:Description>
+        <maml:description>
+          <maml:para>Returns only the first result. This will be the closest AST that matches.</maml:para>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -762,9 +762,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Furthest">
         <maml:name>Last</maml:name>
-        <maml:Description>
-          <maml:para>If specified will return only the last result. This will be the furthest AST that matches.</maml:para>
-        </maml:Description>
+        <maml:description>
+          <maml:para>Returns only the last result. This will be the furthest AST that matches.</maml:para>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -774,9 +774,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Parent">
         <maml:name>Ancestor</maml:name>
-        <maml:Description>
-          <maml:para>If specified will only search ancestors of the starting AST.  This is a convenience parameter that acts the same as the "Family" and "Before" parameters when used together.</maml:para>
-        </maml:Description>
+        <maml:description>
+          <maml:para>Searches only ancestors of the starting AST. This is a convenience parameter that acts the same as the "Family" and "Before" parameters when used together.</maml:para>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -786,9 +786,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>IncludeStartingAst</maml:name>
-        <maml:Description>
-          <maml:para>If specified the starting AST will be included if matched.</maml:para>
-        </maml:Description>
+        <maml:description>
+          <maml:para>Specifies the starting AST will be included if matched.</maml:para>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -798,9 +798,9 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>AtCursor</maml:name>
-        <maml:Description>
-          <maml:para>If specified, this function will return the smallest AST that the cursor is within.</maml:para>
-        </maml:Description>
+        <maml:description>
+          <maml:para>Returns the smallest AST that the cursor is within.</maml:para>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -839,21 +839,21 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
         <dev:code>Find-Ast</dev:code>
         <dev:remarks>
-          <maml:para>Returns all asts in the currently open file in the editor.</maml:para>
+          <maml:para>Returns all ASTs in the currently open file in the editor.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
         <dev:code>Find-Ast -First -IncludeStartingAst</dev:code>
         <dev:remarks>
-          <maml:para>Returns the top level ast in the currently open file in the editor.</maml:para>
+          <maml:para>Returns the top level AST in the currently open file in the editor.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 3 --------------------------</maml:title>
         <dev:code>Find-Ast { $PSItem -is [FunctionDefinitionAst] }</dev:code>
         <dev:remarks>
-          <maml:para>Returns all function definition asts in the ast of file currently open in the editor.</maml:para>
+          <maml:para>Returns all function definition ASTs in the AST of file currently open in the editor.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -867,7 +867,7 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
         <maml:title>-------------------------- EXAMPLE 5 --------------------------</maml:title>
         <dev:code>Find-Ast { $_.InvocationOperator -eq 'Dot' } | Find-Ast -Family { $_.VariablePath }</dev:code>
         <dev:remarks>
-          <maml:para>Returns all variable expressions used in a dot source expression.</maml:para>
+          <maml:para>Returns all variable expressions used in a dot-source expression.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -877,7 +877,7 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
     Set-ScriptExtent -Text '4.0' -AsString</dev:code>
         <dev:remarks>
           <maml:para>This example sets the required PowerShell version in a module manifest to 4.0.</maml:para>
-          <maml:para>First it finds the AST of the PowerShellVersion manifest field, then finds the first AST directly after it and changes the text to '4.0'. This will not work as is if the field is commented.</maml:para>
+          <maml:para>First it finds the AST of the PowerShellVersion manifest field, then finds the first AST directly after it and changes the text to '4.0'. This will not work if the field is commented.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -886,7 +886,7 @@ $psEditor.GetEditorContext().SetSelection($range)</dev:code>
     Find-Ast -First -Ancestor { $_ -is [System.Management.Automation.Language.ParameterAst] } |
     ForEach-Object { $_.Name.VariablePath.UserPath }</dev:code>
         <dev:remarks>
-          <maml:para>This example gets a list of all parameters that belong to the parameter set 'ByPosition'. First it uses the ArgumentName and Argument properties of NamedAttributeArgumentAst to find the ASTs of arguments to the Parameter attribute that declare the the parameter set 'ByPosition'.  It then finds the closest parent ParameterAst and retrieves the name from it.</maml:para>
+          <maml:para>This example gets a list of all parameters that belong to the 'ByPosition' parameter set. First it uses the ArgumentName and Argument properties of NamedAttributeArgumentAst to find the ASTs of arguments to the Parameter attribute that declare the 'ByPosition' parameter set.  It then finds the closest parent ParameterAst and retrieves the name from it.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
@@ -912,7 +912,7 @@ $fullManifestElement = $companyNameComments.Extent, $companyName.Extent | Join-S
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/master/module/docs/Find-Ast.md</maml:uri>
+        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/main/module/docs/Find-Ast.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Get-Token</maml:linkText>
@@ -945,9 +945,9 @@ $fullManifestElement = $companyNameComments.Extent, $companyName.Extent | Join-S
         <maml:name>Get-Token</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="1" aliases="none">
           <maml:name>Extent</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the extent that a token must be within to be returned.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
           <dev:type>
             <maml:name>IScriptExtent</maml:name>
@@ -960,9 +960,9 @@ $fullManifestElement = $companyNameComments.Extent, $companyName.Extent | Join-S
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="1" aliases="none">
         <maml:name>Extent</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the extent that a token must be within to be returned.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
         <dev:type>
           <maml:name>IScriptExtent</maml:name>
@@ -1016,7 +1016,7 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/master/module/docs/Get-Token.md</maml:uri>
+        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/main/module/docs/Get-Token.md</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
@@ -1032,16 +1032,16 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
     <maml:description>
       <maml:para>The Import-EditorCommand function will search the specified module for functions tagged as editor commands and register them with PowerShell Editor Services. By default, if a module is specified only exported functions will be processed.</maml:para>
       <maml:para>Alternatively, you can specify command info objects (like those from the Get-Command cmdlet) to be processed directly.</maml:para>
-      <maml:para>To tag a command as an editor command, attach the attribute 'Microsoft.PowerShell.EditorServices.Extensions.EditorCommandAttribute' to the function like you would with 'CmdletBindingAttribute'.  The attribute accepts the named parameters 'Name', 'DisplayName', and 'SuppressOutput'.</maml:para>
+      <maml:para>To tag a command as an editor command, attach the attribute 'Microsoft.PowerShell.EditorServices.Services.PowerShellContext.EditorCommandAttribute' to the function like you would with 'CmdletBindingAttribute'.  The attribute accepts the named parameters 'Name', 'DisplayName', and 'SuppressOutput'.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Import-EditorCommand</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Module</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the module to search for exportable editor commands.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">string[]</command:parameterValue>
           <dev:type>
             <maml:name>string[]</maml:name>
@@ -1051,9 +1051,9 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>If specified will replace existing editor commands.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1062,9 +1062,9 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>PassThru</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>If specified will return an EditorCommand object for each imported command.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1076,9 +1076,9 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
         <maml:name>Import-EditorCommand</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="1" aliases="none">
           <maml:name>Command</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the functions to register as editor commands. If the function does not have the EditorCommand attribute it will be ignored.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">string[]</command:parameterValue>
           <dev:type>
             <maml:name>string[]</maml:name>
@@ -1088,9 +1088,9 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>If specified will replace existing editor commands.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1099,9 +1099,9 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>PassThru</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>If specified will return an EditorCommand object for each imported command.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1113,9 +1113,9 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Module</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the module to search for exportable editor commands.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">string[]</command:parameterValue>
         <dev:type>
           <maml:name>string[]</maml:name>
@@ -1125,9 +1125,9 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="1" aliases="none">
         <maml:name>Command</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the functions to register as editor commands. If the function does not have the EditorCommand attribute it will be ignored.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">string[]</command:parameterValue>
         <dev:type>
           <maml:name>string[]</maml:name>
@@ -1137,9 +1137,9 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>If specified will replace existing editor commands.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1149,9 +1149,9 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>PassThru</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>If specified will return an EditorCommand object for each imported command.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1173,7 +1173,7 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>Microsoft.PowerShell.EditorServices.Extensions.EditorCommand</maml:name>
+          <maml:name>Microsoft.PowerShell.EditorServices.Services.PowerShellContext.EditorCommand</maml:name>
         </dev:type>
         <maml:description>
           <maml:para>If the "PassThru" parameter is specified editor commands that were successfully registered will be returned.  This function does not output to the pipeline otherwise.</maml:para>
@@ -1204,7 +1204,7 @@ Find-Ast { $_ -is [IfStatementAst] } -First | Get-Token</dev:code>
         <maml:title>-------------------------- EXAMPLE 3 --------------------------</maml:title>
         <dev:code>function Invoke-MyEditorCommand {
     [CmdletBinding()]
-    [Microsoft.PowerShell.EditorServices.Extensions.EditorCommand(DisplayName='My Command', SuppressOutput)]
+    [Microsoft.PowerShell.EditorServices.Services.PowerShellContext.EditorCommand(DisplayName='My Command', SuppressOutput)]
     param()
     end {
         ConvertTo-ScriptExtent -Offset 0 | Set-ScriptExtent -Text 'My Command!'
@@ -1220,7 +1220,7 @@ Get-Command Invoke-MyEditorCommand | Import-EditorCommand</dev:code>
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/master/module/docs/Import-EditorCommand.md</maml:uri>
+        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/main/module/docs/Import-EditorCommand.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Register-EditorCommand</maml:linkText>
@@ -1249,9 +1249,9 @@ Get-Command Invoke-MyEditorCommand | Import-EditorCommand</dev:code>
         <maml:name>Join-ScriptExtent</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="1" aliases="none">
           <maml:name>Extent</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the extents to combine. If a single extent is passed, it will be returned as is. If no extents are passed nothing will be returned. Extents passed from the pipeline are processed after pipeline input completes.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">IScriptExtent[]</command:parameterValue>
           <dev:type>
             <maml:name>IScriptExtent[]</maml:name>
@@ -1264,9 +1264,9 @@ Get-Command Invoke-MyEditorCommand | Import-EditorCommand</dev:code>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="1" aliases="none">
         <maml:name>Extent</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the extents to combine. If a single extent is passed, it will be returned as is. If no extents are passed nothing will be returned. Extents passed from the pipeline are processed after pipeline input completes.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">IScriptExtent[]</command:parameterValue>
         <dev:type>
           <maml:name>IScriptExtent[]</maml:name>
@@ -1313,7 +1313,7 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/master/module/docs/Join-ScriptExtent.md</maml:uri>
+        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/main/module/docs/Join-ScriptExtent.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>ConvertTo-ScriptExtent</maml:linkText>
@@ -1350,9 +1350,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         <maml:name>Out-CurrentFile</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="0" aliases="none">
           <maml:name>InputObject</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>The input object to format, either as a parameter or from the pipeline.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
           <dev:type>
             <maml:name>Object</maml:name>
@@ -1365,9 +1365,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="0" aliases="none">
         <maml:name>InputObject</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>The input object to format, either as a parameter or from the pipeline.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
         <dev:type>
           <maml:name>Object</maml:name>
@@ -1413,7 +1413,7 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/master/module/docs/Out-CurrentFile.md</maml:uri>
+        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/main/module/docs/Out-CurrentFile.md</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
@@ -1435,9 +1435,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         <maml:name>Register-EditorCommand</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Name</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies a unique name which can be used to identify this command. This name is not displayed to the user.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -1447,9 +1447,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>DisplayName</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies a display name which is displayed to the user.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -1459,9 +1459,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Function</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies a function or cmdlet name which will be executed when the user invokes this command. This function may take a parameter called $context which will be populated with an EditorContext object containing information about the host editor's state at the time the command was executed.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -1471,9 +1471,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>SuppressOutput</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>If provided, causes the output of the editor command to be suppressed when it is run. Errors that occur while running this command will still be written to the host.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1485,9 +1485,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         <maml:name>Register-EditorCommand</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Name</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies a unique name which can be used to identify this command. This name is not displayed to the user.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -1497,9 +1497,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>DisplayName</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies a display name which is displayed to the user.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -1509,9 +1509,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>ScriptBlock</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies a ScriptBlock which will be executed when the user invokes this command. This ScriptBlock may take a parameter called $context which will be populated with an EditorContext object containing information about the host editor's state at the time the command was executed.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">ScriptBlock</command:parameterValue>
           <dev:type>
             <maml:name>ScriptBlock</maml:name>
@@ -1521,9 +1521,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>SuppressOutput</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>If provided, causes the output of the editor command to be suppressed when it is run. Errors that occur while running this command will still be written to the host.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1535,9 +1535,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Name</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies a unique name which can be used to identify this command. This name is not displayed to the user.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -1547,9 +1547,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>DisplayName</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies a display name which is displayed to the user.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -1559,9 +1559,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Function</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies a function or cmdlet name which will be executed when the user invokes this command. This function may take a parameter called $context which will be populated with an EditorContext object containing information about the host editor's state at the time the command was executed.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -1571,9 +1571,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>ScriptBlock</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies a ScriptBlock which will be executed when the user invokes this command. This ScriptBlock may take a parameter called $context which will be populated with an EditorContext object containing information about the host editor's state at the time the command was executed.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">ScriptBlock</command:parameterValue>
         <dev:type>
           <maml:name>ScriptBlock</maml:name>
@@ -1583,9 +1583,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>SuppressOutput</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>If provided, causes the output of the editor command to be suppressed when it is run. Errors that occur while running this command will still be written to the host.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1620,7 +1620,7 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/master/module/docs/Register-EditorCommand.md</maml:uri>
+        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/main/module/docs/Register-EditorCommand.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Unregister-EditorCommand</maml:linkText>
@@ -1650,9 +1650,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         <maml:name>Set-ScriptExtent</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="Value">
           <maml:name>Text</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the text to insert in place of the extent.  Any object can be specified, but will be converted to a string before being passed to PowerShell Editor Services.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">PSObject</command:parameterValue>
           <dev:type>
             <maml:name>PSObject</maml:name>
@@ -1662,9 +1662,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>AsString</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies to insert as a single quoted string expression.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1673,9 +1673,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="named" aliases="none">
           <maml:name>Extent</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the extent to replace within the editor.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
           <dev:type>
             <maml:name>IScriptExtent</maml:name>
@@ -1688,9 +1688,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         <maml:name>Set-ScriptExtent</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="Value">
           <maml:name>Text</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the text to insert in place of the extent.  Any object can be specified, but will be converted to a string before being passed to PowerShell Editor Services.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">PSObject</command:parameterValue>
           <dev:type>
             <maml:name>PSObject</maml:name>
@@ -1700,9 +1700,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>AsArray</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies to insert as a single quoted string list.  The list is separated by comma and new line, and will be adjusted to a hanging indent.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1711,9 +1711,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="named" aliases="none">
           <maml:name>Extent</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the extent to replace within the editor.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
           <dev:type>
             <maml:name>IScriptExtent</maml:name>
@@ -1726,9 +1726,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="Value">
         <maml:name>Text</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the text to insert in place of the extent.  Any object can be specified, but will be converted to a string before being passed to PowerShell Editor Services.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">PSObject</command:parameterValue>
         <dev:type>
           <maml:name>PSObject</maml:name>
@@ -1738,9 +1738,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>AsString</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies to insert as a single quoted string expression.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1750,9 +1750,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>AsArray</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies to insert as a single quoted string list.  The list is separated by comma and new line, and will be adjusted to a hanging indent.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1762,9 +1762,9 @@ $ast.Arguments[0..1] | Join-ScriptExtent | Set-ScriptExtent -Text ''</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="named" aliases="none">
         <maml:name>Extent</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the extent to replace within the editor.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
         <dev:type>
           <maml:name>IScriptExtent</maml:name>
@@ -1818,7 +1818,7 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/master/module/docs/Set-ScriptExtent.md</maml:uri>
+        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/main/module/docs/Set-ScriptExtent.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Find-Ast</maml:linkText>
@@ -1859,9 +1859,9 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
         <maml:name>Test-ScriptExtent</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="1" aliases="none">
           <maml:name>Extent</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies the extent to test against.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
           <dev:type>
             <maml:name>IScriptExtent</maml:name>
@@ -1871,9 +1871,9 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Inside</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies that the reference extent must be inside this extent for the test to pass.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
           <dev:type>
             <maml:name>IScriptExtent</maml:name>
@@ -1883,9 +1883,9 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>After</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies that the reference extent must be after this extent for the test to pass.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
           <dev:type>
             <maml:name>IScriptExtent</maml:name>
@@ -1895,9 +1895,9 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Before</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies that the reference extent must be before this extent for the test to pass.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
           <dev:type>
             <maml:name>IScriptExtent</maml:name>
@@ -1907,9 +1907,9 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>PassThru</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>If specified this function will return the reference extent if the test passed instead of returning a boolean.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1921,9 +1921,9 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="1" aliases="none">
         <maml:name>Extent</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies the extent to test against.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
         <dev:type>
           <maml:name>IScriptExtent</maml:name>
@@ -1933,9 +1933,9 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Inside</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies that the reference extent must be inside this extent for the test to pass.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
         <dev:type>
           <maml:name>IScriptExtent</maml:name>
@@ -1945,9 +1945,9 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>After</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies that the reference extent must be after this extent for the test to pass.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
         <dev:type>
           <maml:name>IScriptExtent</maml:name>
@@ -1957,9 +1957,9 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Before</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies that the reference extent must be before this extent for the test to pass.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">IScriptExtent</command:parameterValue>
         <dev:type>
           <maml:name>IScriptExtent</maml:name>
@@ -1969,9 +1969,9 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>PassThru</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>If specified this function will return the reference extent if the test passed instead of returning a boolean.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -2025,7 +2025,7 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/master/module/docs/Test-ScriptExtent.md</maml:uri>
+        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/main/module/docs/Test-ScriptExtent.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>ConvertTo-ScriptExtent</maml:linkText>
@@ -2062,9 +2062,9 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
         <maml:name>Unregister-EditorCommand</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>Name</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specifies a unique name which identifies a command which has already been registered.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
@@ -2077,9 +2077,9 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>Name</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specifies a unique name which identifies a command which has already been registered.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -2107,7 +2107,7 @@ $manifestAst | Set-ScriptExtent -Text (gci .\src\Public).BaseName -AsArray</dev:
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/master/module/docs/Unregister-EditorCommand.md</maml:uri>
+        <maml:uri>https://github.com/PowerShell/PowerShellEditorServices/tree/main/module/docs/Unregister-EditorCommand.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Register-EditorCommand</maml:linkText>

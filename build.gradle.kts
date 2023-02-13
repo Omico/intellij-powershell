@@ -1,3 +1,6 @@
+import org.gradle.kotlin.dsl.support.unzipTo
+import java.net.URL
+
 buildscript {
     repositories {
         mavenCentral()
@@ -83,6 +86,33 @@ val downloadMissingPowerShellModules by tasks.registering {
         .filterNot { module -> file(module).exists() }
         .map { module -> "download$module" }
         .let { list -> dependsOn(list) }
+}
+
+val refreshPowerShellEditorServices by tasks.registering {
+    doLast {
+        val version = "3.8.0"
+        URL(
+            "https://github.com/PowerShell/PowerShellEditorServices/releases/download/"
+                    + "v$version"
+                    + "/PowerShellEditorServices.zip"
+        ).openStream().use { input ->
+            layout.buildDirectory.file("tmp/PowerShellEditorServices.zip").get().asFile.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+        val unzipDestination = layout.buildDirectory.file("tmp/PowerShellEditorServices").get().asFile
+        if (unzipDestination.exists()) unzipDestination.deleteRecursively()
+        unzipTo(
+            unzipDestination,
+            layout.buildDirectory.file("tmp/PowerShellEditorServices.zip").get().asFile,
+        )
+        val outputDir = file("language_host/current/LanguageHost/modules/PowerShellEditorServices")
+        if (outputDir.exists()) outputDir.deleteRecursively()
+        copy {
+            from(File(unzipDestination, "PowerShellEditorServices"))
+            into(outputDir)
+        }
+    }
 }
 
 tasks.prepareSandbox {
