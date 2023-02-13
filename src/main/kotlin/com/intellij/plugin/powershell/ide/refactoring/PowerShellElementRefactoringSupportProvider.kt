@@ -6,13 +6,12 @@ import com.intellij.psi.PsiElement
 
 class PowerShellElementRefactoringSupportProvider : RefactoringSupportProvider() {
 
-  override fun isSafeDeleteAvailable(element: PsiElement): Boolean = element is PowerShellComponent
+    override fun isSafeDeleteAvailable(element: PsiElement): Boolean = element is PowerShellComponent
 
-  override fun isInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean = false
+    override fun isInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean = false
 
-  override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean =
-      isAvailable(element) && !isBracedVariable(element) && !isVariableWithNamespace(element)
+    override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean =
+        isAvailable(element) && !isBracedVariable(element) && !isVariableWithNamespace(element)
 
-  override fun isAvailable(context: PsiElement): Boolean = context is PowerShellComponent
-
+    override fun isAvailable(context: PsiElement): Boolean = context is PowerShellComponent
 }

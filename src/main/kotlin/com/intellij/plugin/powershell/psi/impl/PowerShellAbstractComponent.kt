@@ -10,34 +10,34 @@ import com.intellij.plugin.powershell.psi.PowerShellPsiElementFactory
 import com.intellij.psi.PsiElement
 import javax.swing.Icon
 
-
 /**
  * Andrey 15/08/17.
  */
 abstract class PowerShellAbstractComponent(node: ASTNode) : PowerShellPsiElementImpl(node), PowerShellComponent {
 
-  override fun getPresentation(): ItemPresentation {
-    return object : ItemPresentation {
-      override fun getLocationString(): String? = null
-      override fun getIcon(unused: Boolean): Icon? = getIcon(0)
-      override fun getPresentableText(): String? = name
+    override fun getPresentation(): ItemPresentation {
+        return object : ItemPresentation {
+            override fun getLocationString(): String? = null
+            override fun getIcon(unused: Boolean): Icon? = getIcon(0)
+            override fun getPresentableText(): String? = name
+        }
     }
-  }
 
-  override fun getName(): String? = nameIdentifier?.text
+    override fun getName(): String? = nameIdentifier?.text
 
-  override fun getTextOffset(): Int = nameIdentifier?.textOffset ?: super.getTextOffset()
+    override fun getTextOffset(): Int = nameIdentifier?.textOffset ?: super.getTextOffset()
 
-  override fun getNameIdentifier(): PowerShellIdentifier? = findChildByClass(PowerShellIdentifier::class.java)
+    override fun getNameIdentifier(): PowerShellIdentifier? = findChildByClass(PowerShellIdentifier::class.java)
 
-  override fun setName(name: String): PsiElement {
-    val identifier = nameIdentifier
-    val identifierNew = PowerShellPsiElementFactory.createIdentifierFromText(project, name, this is PowerShellFunctionStatement)
-    if (identifierNew != null && identifier != null) {
-      node.replaceChild(identifier.node, identifierNew.node)
+    override fun setName(name: String): PsiElement {
+        val identifier = nameIdentifier
+        val identifierNew =
+            PowerShellPsiElementFactory.createIdentifierFromText(project, name, this is PowerShellFunctionStatement)
+        if (identifierNew != null && identifier != null) {
+            node.replaceChild(identifier.node, identifierNew.node)
+        }
+        return this
     }
-    return this
-  }
 
-  override fun getIcon(flags: Int): Icon? = PowerShellComponentType.typeOf(this)?.getIcon()
+    override fun getIcon(flags: Int): Icon? = PowerShellComponentType.typeOf(this)?.getIcon()
 }

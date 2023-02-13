@@ -13,11 +13,12 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.plugin.powershell.lang.lsp.ide.settings.PowerShellExecutableChooserPanel;
 import com.intellij.ui.components.fields.ExtendableTextField;
+import java.io.File;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.io.File;
 
 public class PowerShellRunSettingsEditor extends SettingsEditor<PowerShellRunConfiguration> {
 
@@ -28,14 +29,17 @@ public class PowerShellRunSettingsEditor extends SettingsEditor<PowerShellRunCon
   private JTextField commandOptionsTextField;
   private ExtendableTextField workingDirectoryTextField;
   private TextFieldWithBrowseButton workingDirectoryTextFieldWithBrowseBtn;
-  private EnvironmentVariablesTextFieldWithBrowseButton environmentVariablesTextFieldWithBrowseButton;
+  private EnvironmentVariablesTextFieldWithBrowseButton
+      environmentVariablesTextFieldWithBrowseButton;
   private PowerShellExecutableChooserPanel psExecutableChooserComponent;
 
   public PowerShellRunSettingsEditor(Project project, PowerShellRunConfiguration runConfiguration) {
     this.runConfiguration = runConfiguration;
 
-    FileChooserDescriptor descriptor = new FileChooserDescriptor(true, false, false, false, false, false);
-    scriptTextField.addBrowseFolderListener("Chose Script", "Please choose script to run", project, descriptor);
+    FileChooserDescriptor descriptor =
+        new FileChooserDescriptor(true, false, false, false, false, false);
+    scriptTextField.addBrowseFolderListener(
+        "Chose Script", "Please choose script to run", project, descriptor);
   }
 
   @Override
@@ -97,11 +101,20 @@ public class PowerShellRunSettingsEditor extends SettingsEditor<PowerShellRunCon
 
   private void createUIComponents() {
     workingDirectoryTextField = new ExtendableTextField();
-    workingDirectoryTextFieldWithBrowseBtn = new TextFieldWithBrowseButton(workingDirectoryTextField);
-    workingDirectoryTextFieldWithBrowseBtn.addBrowseFolderListener("Choose directory", null, runConfiguration.getProject(), BrowseFilesListener.SINGLE_DIRECTORY_DESCRIPTOR, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
+    workingDirectoryTextFieldWithBrowseBtn =
+        new TextFieldWithBrowseButton(workingDirectoryTextField);
+    workingDirectoryTextFieldWithBrowseBtn.addBrowseFolderListener(
+        "Choose directory",
+        null,
+        runConfiguration.getProject(),
+        BrowseFilesListener.SINGLE_DIRECTORY_DESCRIPTOR,
+        TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
     JTextField textField = workingDirectoryTextFieldWithBrowseBtn.getChildComponent();
-    FileChooserFactory.getInstance().installFileCompletion(textField, BrowseFilesListener.SINGLE_DIRECTORY_DESCRIPTOR, true, null);
+    FileChooserFactory.getInstance()
+        .installFileCompletion(
+            textField, BrowseFilesListener.SINGLE_DIRECTORY_DESCRIPTOR, true, null);
     MacrosDialog.addMacroSupport(workingDirectoryTextField, MacrosDialog.Filters.ALL, () -> false);
-    psExecutableChooserComponent = new PowerShellExecutableChooserPanel(runConfiguration.getExecutablePath());
+    psExecutableChooserComponent =
+        new PowerShellExecutableChooserPanel(runConfiguration.getExecutablePath());
   }
 }

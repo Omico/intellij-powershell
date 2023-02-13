@@ -8,11 +8,11 @@ import org.eclipse.lsp4j.CompletionItemKind
 
 interface LSPWrapperPsiElement : PowerShellComponent {
 
-  fun getCompletionKind(): CompletionItemKind
-  fun getCompletionItem(): CompletionItem?
-  fun getDocumentation(): String?
-  override fun getName(): String?
-  override fun getParent(): PsiElement?
-  fun setType(type: PowerShellComponentType)
-  fun getType(): PowerShellComponentType
+    fun getCompletionKind(): CompletionItemKind
+    fun getCompletionItem(): CompletionItem?
+    fun getDocumentation(): String?
+    override fun getName(): String?
+    override fun getParent(): PsiElement?
+    fun setType(type: PowerShellComponentType)
+    fun getType(): PowerShellComponentType
 }

@@ -10,14 +10,15 @@ import com.intellij.plugin.powershell.lang.lsp.LSPInitMain
 
 class PowerShellConsoleAction : AnAction(PowerShellIcons.FILE) {
 
-  override fun actionPerformed(e: AnActionEvent) {
-    val project = e.project ?: return
-    val server = LSPInitMain.getServerWithConsoleProcess(project)
-    ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Starting PowerShell terminal console", false) {
-      override fun run(indicator: ProgressIndicator) {
-        indicator.text = "Starting PowerShell terminal console..."
-        server.start()
-      }
-    })
-  }
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        val server = LSPInitMain.getServerWithConsoleProcess(project)
+        ProgressManager.getInstance()
+            .run(object : Task.Backgroundable(project, "Starting PowerShell terminal console", false) {
+                override fun run(indicator: ProgressIndicator) {
+                    indicator.text = "Starting PowerShell terminal console..."
+                    server.start()
+                }
+            })
+    }
 }

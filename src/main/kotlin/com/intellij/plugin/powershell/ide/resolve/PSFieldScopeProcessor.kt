@@ -11,16 +11,14 @@ import com.intellij.psi.ResolveState
  */
 class PSFieldScopeProcessor(private val myName: String) : PowerShellMemberScopeProcessor() {
 
-  override fun doExecute(psMember: PowerShellMemberDeclaration, state: ResolveState): Boolean {
-    if (psMember is PowerShellPropertyDeclarationStatement || psMember is PowerShellEnumLabelDeclaration
-        || psMember is PowerShellMethodDeclarationStatement) {
-
-      if (myName.equals(psMember.name, true)) {
-        myResult.add(PowerShellResolveResult(psMember))
-      }
+    override fun doExecute(psMember: PowerShellMemberDeclaration, state: ResolveState): Boolean {
+        if (psMember is PowerShellPropertyDeclarationStatement || psMember is PowerShellEnumLabelDeclaration ||
+            psMember is PowerShellMethodDeclarationStatement
+        ) {
+            if (myName.equals(psMember.name, true)) {
+                myResult.add(PowerShellResolveResult(psMember))
+            }
+        }
+        return true
     }
-    return true
-  }
-
-
 }

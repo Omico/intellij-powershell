@@ -6,7 +6,11 @@ import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
-import com.intellij.plugin.powershell.psi.PowerShellTypes.*
+import com.intellij.plugin.powershell.psi.PowerShellTypes.ARRAY_EXPRESSION
+import com.intellij.plugin.powershell.psi.PowerShellTypes.BLOCK_BODY
+import com.intellij.plugin.powershell.psi.PowerShellTypes.COMMENT
+import com.intellij.plugin.powershell.psi.PowerShellTypes.NLS
+import com.intellij.plugin.powershell.psi.PowerShellTypes.SCRIPT_BLOCK_EXPRESSION
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 
@@ -15,7 +19,12 @@ class PowerShellFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         return false
     }
 
-    override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
+    override fun buildLanguageFoldRegions(
+        descriptors: MutableList<FoldingDescriptor>,
+        root: PsiElement,
+        document: Document,
+        quick: Boolean,
+    ) {
         collect(root, descriptors, HashSet())
     }
 
@@ -28,7 +37,11 @@ class PowerShellFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         }
     }
 
-    private fun collect(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, usedComments: MutableSet<PsiElement>) {
+    private fun collect(
+        element: PsiElement,
+        descriptors: MutableList<FoldingDescriptor>,
+        usedComments: MutableSet<PsiElement>,
+    ) {
         val node = element.node
         when (node.elementType) {
             BLOCK_BODY, SCRIPT_BLOCK_EXPRESSION, ARRAY_EXPRESSION -> {
@@ -71,7 +84,6 @@ class PowerShellFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     private fun isSpanMultipleLines(node: ASTNode): Boolean {
         return node.textContains('\n') || node.textContains('\r')
     }
-
 }
 
 fun PsiElement.getNextSiblingNonWhiteSpace(): PsiElement? {

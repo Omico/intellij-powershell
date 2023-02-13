@@ -4,5 +4,5 @@
 package com.intellij.plugin.powershell.lang.lsp.languagehost
 
 enum class ServerStatus {
-  STARTED, FAILED, STARTING, STOPPED
+    STARTED, FAILED, STARTING, STOPPED
 }

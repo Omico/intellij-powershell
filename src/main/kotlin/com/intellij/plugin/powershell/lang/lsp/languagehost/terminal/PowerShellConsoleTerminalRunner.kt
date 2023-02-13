@@ -44,159 +44,174 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.Future
 import javax.swing.JPanel
 
-class PowerShellConsoleTerminalRunner(project: Project) : EditorServicesLanguageHostStarter(project), LanguageHostConnectionManager {
-  private val myDefaultCharset = CharsetToolkit.UTF8_CHARSET
-  private val LOG = Logger.getInstance(javaClass)
+class PowerShellConsoleTerminalRunner(project: Project) :
+    EditorServicesLanguageHostStarter(project),
+    LanguageHostConnectionManager {
+    private val myDefaultCharset = CharsetToolkit.UTF8_CHARSET
+    private val LOG = Logger.getInstance(javaClass)
 
-  private var myServer: LanguageServerEndpoint? = null
+    private var myServer: LanguageServerEndpoint? = null
 
-  override fun useConsoleRepl(): Boolean = true
-  internal fun getServer(): LanguageServerEndpoint? = myServer
+    override fun useConsoleRepl(): Boolean = true
+    internal fun getServer(): LanguageServerEndpoint? = myServer
 
-  override fun connectServer(server: LanguageServerEndpoint) {
-    myServer = server
-  }
-
-  private fun createTtyConnector(process: PtyProcess): TtyConnector {
-    return PtyProcessTtyConnector(process, myDefaultCharset)
-  }
-
-  companion object {
-    @Volatile
-    private var sessionCount = 0
-
-    private fun createPtyProcess(project: Project, command: Array<out String>, directory: String?): PtyProcess {
-      val envs = HashMap(EnvironmentUtil.getEnvironmentMap())
-      if (!SystemInfo.isWindows) {
-        envs["TERM"] = "xterm-256color"
-      }
-      if (SystemInfo.isMac) {
-        EnvironmentUtil.setLocaleEnv(envs, charset("UTF-8"))
-      }
-      try {
-        val logFile = File(PathManager.getLogPath(), "pty-ps.log")
-        logFile.createNewFile()
-        return PtyProcess.exec(command, envs,
-                               directory ?: TerminalProjectOptionsProvider.getInstance(project).startingDirectory,
-                               false, false, logFile)
-      } catch (e: IOException) {
-        throw ExecutionException(e)
-      }
+    override fun connectServer(server: LanguageServerEndpoint) {
+        myServer = server
     }
-  }
 
-  private fun getSessionCount(): Int {
-    return ++sessionCount - 1
-  }
-
-  override fun getLogFileName(): String = "EditorServices-IJ-Console-${getSessionCount()}"
-
-  override fun createProcess(project: Project, command: List<String>, directory: String?): PtyProcess {
-    LOG.info("Language server starting... exe: '$command'")
-    val process = createPtyProcess(myProject, command.toTypedArray(), directory)
-    try {
-      initConsoleUI(process)
-    } catch (e: Exception) {
-      GuiUtils.invokeLaterIfNeeded({ Messages.showErrorDialog(this@PowerShellConsoleTerminalRunner.myProject, e.message, "Launching PowerShell terminal console") },
-                                   ModalityState.NON_MODAL)
+    private fun createTtyConnector(process: PtyProcess): TtyConnector {
+        return PtyProcessTtyConnector(process, myDefaultCharset)
     }
-    return process
-  }
 
-  private fun initConsoleUI(process: PtyProcess) {
-    try {
-      GuiUtils.invokeLaterIfNeeded({ doInitConsoleUI(process) }, ModalityState.NON_MODAL)
-    } catch (e: Exception) {
-      throw RuntimeException(e.message, e)
+    companion object {
+        @Volatile
+        private var sessionCount = 0
+
+        private fun createPtyProcess(project: Project, command: Array<out String>, directory: String?): PtyProcess {
+            val envs = HashMap(EnvironmentUtil.getEnvironmentMap())
+            if (!SystemInfo.isWindows) {
+                envs["TERM"] = "xterm-256color"
+            }
+            if (SystemInfo.isMac) {
+                EnvironmentUtil.setLocaleEnv(envs, charset("UTF-8"))
+            }
+            try {
+                val logFile = File(PathManager.getLogPath(), "pty-ps.log")
+                logFile.createNewFile()
+                return PtyProcess.exec(
+                    command, envs,
+                    directory ?: TerminalProjectOptionsProvider.getInstance(project).startingDirectory,
+                    false, false, logFile,
+                )
+            } catch (e: IOException) {
+                throw ExecutionException(e)
+            }
+        }
     }
-  }
 
-  private fun doInitConsoleUI(process: PtyProcess) {
-    LOG.debug("Initializing PowerShell Console UI...")
-    val toolbarActions = DefaultActionGroup()
-    val actionToolbar = ActionManager.getInstance().createActionToolbar("PowerShellConsoleRunner", toolbarActions, false)
+    private fun getSessionCount(): Int {
+        return ++sessionCount - 1
+    }
 
-    val panel = JPanel(BorderLayout())
-    panel.add(actionToolbar.component, BorderLayout.WEST)
-    actionToolbar.setTargetComponent(panel)
+    override fun getLogFileName(): String = "EditorServices-IJ-Console-${getSessionCount()}"
 
-    val processHandler = PSPtyProcessHandler(this, process, "PowerShell console process")
-    val contentDescriptor = RunContentDescriptor(null, processHandler, panel, "PowerShell Terminal Console")
-    contentDescriptor.isAutoFocusContent = true
+    override fun createProcess(project: Project, command: List<String>, directory: String?): PtyProcess {
+        LOG.info("Language server starting... exe: '$command'")
+        val process = createPtyProcess(myProject, command.toTypedArray(), directory)
+        try {
+            initConsoleUI(process)
+        } catch (e: Exception) {
+            GuiUtils.invokeLaterIfNeeded(
+                {
+                    Messages.showErrorDialog(
+                        this@PowerShellConsoleTerminalRunner.myProject,
+                        e.message,
+                        "Launching PowerShell terminal console",
+                    )
+                },
+                ModalityState.NON_MODAL,
+            )
+        }
+        return process
+    }
 
-    val runExecutor = DefaultRunExecutor.getRunExecutorInstance()
-    toolbarActions.add(createCloseAction(runExecutor, contentDescriptor))
+    private fun initConsoleUI(process: PtyProcess) {
+        try {
+            GuiUtils.invokeLaterIfNeeded({ doInitConsoleUI(process) }, ModalityState.NON_MODAL)
+        } catch (e: Exception) {
+            throw RuntimeException(e.message, e)
+        }
+    }
 
-    val provider = JBTerminalSystemSettingsProvider()
-    val widget = JBTerminalWidget(myProject, provider, contentDescriptor)
+    private fun doInitConsoleUI(process: PtyProcess) {
+        LOG.debug("Initializing PowerShell Console UI...")
+        val toolbarActions = DefaultActionGroup()
+        val actionToolbar =
+            ActionManager.getInstance().createActionToolbar("PowerShellConsoleRunner", toolbarActions, false)
 
-    createAndStartSession(widget, createTtyConnector(process))
+        val panel = JPanel(BorderLayout())
+        panel.add(actionToolbar.component, BorderLayout.WEST)
+        actionToolbar.targetComponent = panel
 
-    panel.add(widget.component, BorderLayout.CENTER)
+        val processHandler = PSPtyProcessHandler(this, process, "PowerShell console process")
+        val contentDescriptor = RunContentDescriptor(null, processHandler, panel, "PowerShell Terminal Console")
+        contentDescriptor.isAutoFocusContent = true
 
-    showConsole(runExecutor, contentDescriptor, widget.component)
+        val runExecutor = DefaultRunExecutor.getRunExecutorInstance()
+        toolbarActions.add(createCloseAction(runExecutor, contentDescriptor))
 
-    processHandler.startNotify()
-  }
+        val provider = JBTerminalSystemSettingsProvider()
+        val widget = JBTerminalWidget(myProject, provider, contentDescriptor)
 
+        createAndStartSession(widget, createTtyConnector(process))
 
-  private fun createAndStartSession(terminal: TerminalWidget, ttyConnector: TtyConnector) {
-    val session = terminal.createTerminalSession(ttyConnector)
+        panel.add(widget.component, BorderLayout.CENTER)
 
-    session.start()
-  }
+        showConsole(runExecutor, contentDescriptor, widget.component)
 
-  private fun createCloseAction(defaultExecutor: Executor, myDescriptor: RunContentDescriptor): AnAction {
-    return CloseAction(defaultExecutor, myDescriptor, myProject)
-  }
+        processHandler.startNotify()
+    }
 
-  private fun showConsole(defaultExecutor: Executor, myDescriptor: RunContentDescriptor, toFocus: Component) {
-    // Show in run toolwindow
-    RunContentManager.getInstance(myProject).showRunContent(defaultExecutor, myDescriptor)
+    private fun createAndStartSession(terminal: TerminalWidget, ttyConnector: TtyConnector) {
+        val session = terminal.createTerminalSession(ttyConnector)
 
-    // Request focus
-    val toolWindow = ToolWindowManager.getInstance(myProject).getToolWindow(defaultExecutor.id)
-    toolWindow?.activate { IdeFocusManager.getInstance(myProject).requestFocus(toFocus, true) }
-  }
+        session.start()
+    }
 
+    private fun createCloseAction(defaultExecutor: Executor, myDescriptor: RunContentDescriptor): AnAction {
+        return CloseAction(defaultExecutor, myDescriptor, myProject)
+    }
+
+    private fun showConsole(defaultExecutor: Executor, myDescriptor: RunContentDescriptor, toFocus: Component) {
+        // Show in run toolwindow
+        RunContentManager.getInstance(myProject).showRunContent(defaultExecutor, myDescriptor)
+
+        // Request focus
+        val toolWindow = ToolWindowManager.getInstance(myProject).getToolWindow(defaultExecutor.id)
+        toolWindow?.activate { IdeFocusManager.getInstance(myProject).requestFocus(toFocus, true) }
+    }
 }
 
-class PSPtyProcessHandler(private val myPowerShellConsoleRunner: PowerShellConsoleTerminalRunner, private val myProcess: PtyProcess, presentableName: String) : ProcessHandler(), TaskExecutor {
-  private val LOG = Logger.getInstance(PSPtyProcessHandler::class.java.name)
-  private val myWaitFor: ProcessWaitFor = ProcessWaitFor(myProcess, this, presentableName)
+class PSPtyProcessHandler(
+    private val myPowerShellConsoleRunner: PowerShellConsoleTerminalRunner,
+    private val myProcess: PtyProcess,
+    presentableName: String,
+) : ProcessHandler(), TaskExecutor {
+    private val LOG = Logger.getInstance(PSPtyProcessHandler::class.java.name)
+    private val myWaitFor: ProcessWaitFor = ProcessWaitFor(myProcess, this, presentableName)
 
-  override fun startNotify() {
-    addProcessListener(object : ProcessAdapter() {
-      override fun startNotified(event: ProcessEvent) {
-        try {
-          myWaitFor.setTerminationCallback { integer -> notifyProcessTerminated(integer!!) }
-        } finally {
-          removeProcessListener(this)
-        }
-      }
-    })
-    super.startNotify()
-  }
+    override fun startNotify() {
+        addProcessListener(object : ProcessAdapter() {
+            override fun startNotified(event: ProcessEvent) {
+                try {
+                    myWaitFor.setTerminationCallback { integer -> notifyProcessTerminated(integer!!) }
+                } finally {
+                    removeProcessListener(this)
+                }
+            }
+        })
+        super.startNotify()
+    }
 
-  override fun destroyProcessImpl() {
-    LOG.info("Terminating PowerShell Console session...")
-    //myProcess.destroy()//instead we send shutdown + close notification to the server so that it terminate process
-    this@PSPtyProcessHandler.myPowerShellConsoleRunner.getServer()?.shutdown()
-  }
+    override fun destroyProcessImpl() {
+        LOG.info("Terminating PowerShell Console session...")
+        // myProcess.destroy()//instead we send shutdown + close notification to the server so that it terminate process
+        this@PSPtyProcessHandler.myPowerShellConsoleRunner.getServer()?.shutdown()
+    }
 
-  override fun detachProcessImpl() {
-    destroyProcessImpl()
-  }
+    override fun detachProcessImpl() {
+        destroyProcessImpl()
+    }
 
-  override fun detachIsDefault(): Boolean = false
+    override fun detachIsDefault(): Boolean = false
 
-  override fun isSilentlyDestroyOnClose(): Boolean = true
+    override fun isSilentlyDestroyOnClose(): Boolean = true
 
-  override fun getProcessInput(): OutputStream? {
-    return myProcess.outputStream
-  }
+    override fun getProcessInput(): OutputStream? {
+        return myProcess.outputStream
+    }
 
-  override fun executeTask(task: Runnable): Future<*> {
-    return AppExecutorUtil.getAppExecutorService().submit(task)
-  }
+    override fun executeTask(task: Runnable): Future<*> {
+        return AppExecutorUtil.getAppExecutorService().submit(task)
+    }
 }

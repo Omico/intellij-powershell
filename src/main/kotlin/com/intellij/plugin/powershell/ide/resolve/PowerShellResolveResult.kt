@@ -8,17 +8,17 @@ import com.intellij.psi.ResolveResult
  */
 class PowerShellResolveResult(private val myElement: PowerShellComponent) : ResolveResult {
 
-  override fun getElement(): PowerShellComponent {
-    return myElement
-  }
+    override fun getElement(): PowerShellComponent {
+        return myElement
+    }
 
-  private val myIsValid: Boolean = true
+    private val myIsValid: Boolean = true
 
-  override fun isValidResult(): Boolean {
-    return myIsValid
-  }
+    override fun isValidResult(): Boolean {
+        return myIsValid
+    }
 
-  companion object {
-    val EMPTY_ARRAY = arrayOf<PowerShellResolveResult>()
-  }
+    companion object {
+        val EMPTY_ARRAY = arrayOf<PowerShellResolveResult>()
+    }
 }

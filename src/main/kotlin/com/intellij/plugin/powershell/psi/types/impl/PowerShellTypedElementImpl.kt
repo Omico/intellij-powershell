@@ -7,5 +7,5 @@ import com.intellij.plugin.powershell.psi.types.PowerShellTypedElement
 
 open class PowerShellTypedElementImpl(node: ASTNode) : PowerShellPsiElementImpl(node), PowerShellTypedElement {
 
-  override fun getType(): PowerShellType = PowerShellObjectType()
+    override fun getType(): PowerShellType = PowerShellObjectType()
 }

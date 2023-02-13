@@ -9,22 +9,21 @@ import com.intellij.psi.scope.PsiScopeProcessor
  * Andrey 24/12/17.
  */
 open class PowerShellClassScopeProcessor : PsiScopeProcessor {
-  private val myResult: ArrayList<PowerShellResolveResult> = ArrayList()
+    private val myResult: ArrayList<PowerShellResolveResult> = ArrayList()
 
-  override fun execute(element: PsiElement, state: ResolveState): Boolean {
-    if (element is PowerShellTypeDeclaration) {
-      return doExecute(element, state)
+    override fun execute(element: PsiElement, state: ResolveState): Boolean {
+        if (element is PowerShellTypeDeclaration) {
+            return doExecute(element, state)
+        }
+        return true
     }
-    return true
-  }
 
-  open fun doExecute(pstype: PowerShellTypeDeclaration, state: ResolveState): Boolean {
-    myResult.add(PowerShellResolveResult(pstype))
-    return true
-  }
+    open fun doExecute(pstype: PowerShellTypeDeclaration, state: ResolveState): Boolean {
+        myResult.add(PowerShellResolveResult(pstype))
+        return true
+    }
 
-  fun getResult(): List<PowerShellResolveResult> {
-    return myResult
-  }
-
+    fun getResult(): List<PowerShellResolveResult> {
+        return myResult
+    }
 }

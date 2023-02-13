@@ -9,25 +9,23 @@ import com.intellij.psi.util.PsiTreeUtil
 /**
  * Andrey 19/08/17.
  */
-class PowerShellComponentResolveProcessor : ResolveCache.AbstractResolver<PowerShellReferencePsiElement, List<PsiElement>> {
+class PowerShellComponentResolveProcessor :
+    ResolveCache.AbstractResolver<PowerShellReferencePsiElement, List<PsiElement>> {
 
-  companion object {
-    val INSTANCE = PowerShellComponentResolveProcessor()
-  }
+    companion object {
+        val INSTANCE = PowerShellComponentResolveProcessor()
+    }
 
-  override fun resolve(ref: PowerShellReferencePsiElement, incompleteCode: Boolean): List<PsiElement> {
+    override fun resolve(ref: PowerShellReferencePsiElement, incompleteCode: Boolean): List<PsiElement> {
+        // local
+        val maxScope = getMaxScope(ref.element)
+        val resolveProcessor = PowerShellComponentScopeProcessor()
+        PsiTreeUtil.treeWalkUp(resolveProcessor, ref.element, maxScope, ResolveState.initial())
+        val results = resolveProcessor.getResult()
+        return results.toList()
+    }
 
-    // local
-    val maxScope = getMaxScope(ref.element)
-    val resolveProcessor = PowerShellComponentScopeProcessor()
-    PsiTreeUtil.treeWalkUp(resolveProcessor, ref.element, maxScope, ResolveState.initial())
-    val results = resolveProcessor.getResult()
-    return results.toList()
-  }
-
-  private fun getMaxScope(context: PsiElement): PsiElement? {
-    return null
-  }
-
-
+    private fun getMaxScope(context: PsiElement): PsiElement? {
+        return null
+    }
 }

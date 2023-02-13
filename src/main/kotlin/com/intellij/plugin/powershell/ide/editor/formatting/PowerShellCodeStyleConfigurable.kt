@@ -9,14 +9,15 @@ import com.intellij.psi.codeStyle.CodeStyleSettings
 /**
  * Andrey 09/08/17.
  */
-class PowerShellCodeStyleConfigurable(settings: CodeStyleSettings, cloneSettings: CodeStyleSettings) : CodeStyleAbstractConfigurable(settings, cloneSettings, "Power Shell") {
-  override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
-    return PowerShellCodeStyleMainPanel(currentSettings, settings)
-  }
+class PowerShellCodeStyleConfigurable(settings: CodeStyleSettings, cloneSettings: CodeStyleSettings) :
+    CodeStyleAbstractConfigurable(settings, cloneSettings, "Power Shell") {
+    override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
+        return PowerShellCodeStyleMainPanel(currentSettings, settings)
+    }
 
-  override fun getHelpTopic(): String? {
-    return null
-  }
+    override fun getHelpTopic(): String? {
+        return null
+    }
 }
 
 class PowerShellCodeStyleMainPanel(currentSettings: CodeStyleSettings?, settings: CodeStyleSettings) :

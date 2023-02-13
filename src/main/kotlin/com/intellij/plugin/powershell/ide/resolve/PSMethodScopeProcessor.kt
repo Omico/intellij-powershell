@@ -10,24 +10,22 @@ import com.intellij.psi.ResolveState
  */
 class PSMethodScopeProcessor(private val myName: String) : PowerShellMemberScopeProcessor() {
 
-  override fun doExecute(psMember: PowerShellMemberDeclaration, state: ResolveState): Boolean {
-    if (psMember is PowerShellMethodDeclarationStatement) {
-      if (myName.equals((psMember as PowerShellMemberDeclaration).name, true)) {
-        myResult.add(PowerShellResolveResult(psMember))
-        return false
-      }
+    override fun doExecute(psMember: PowerShellMemberDeclaration, state: ResolveState): Boolean {
+        if (psMember is PowerShellMethodDeclarationStatement) {
+            if (myName.equals((psMember as PowerShellMemberDeclaration).name, true)) {
+                myResult.add(PowerShellResolveResult(psMember))
+                return false
+            }
+        }
+        if (PsNames.CONSTRUCTOR_CALL.equals(myName, true)) {
+            val memberName = psMember.name
+            val clazz = psMember.getContainingClass()
+            if (memberName != null && memberName.equals(clazz?.name, true)) {
+                assert(psMember is PowerShellConstructorDeclarationStatement)
+                myResult.add(PowerShellResolveResult(psMember))
+                return false
+            }
+        }
+        return true
     }
-    if (PsNames.CONSTRUCTOR_CALL.equals(myName, true)) {
-      val memberName = psMember.name
-      val clazz = psMember.getContainingClass()
-      if (memberName != null && memberName.equals(clazz?.name, true)) {
-        assert(psMember is PowerShellConstructorDeclarationStatement)
-        myResult.add(PowerShellResolveResult(psMember))
-        return false
-      }
-    }
-    return true
-  }
-
-
 }

@@ -9,7 +9,7 @@ import com.intellij.openapi.vfs.VirtualFile
  * Andrey 17/07/17.
  */
 class PowerShellSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
-  override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): SyntaxHighlighter {
-    return PowerShellSyntaxHighlighter()
-  }
+    override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): SyntaxHighlighter {
+        return PowerShellSyntaxHighlighter()
+    }
 }

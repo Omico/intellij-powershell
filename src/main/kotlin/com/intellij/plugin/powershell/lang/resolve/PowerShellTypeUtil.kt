@@ -19,20 +19,20 @@ object PowerShellTypeUtil {
 //    return PowerShellType.UNNAMED
 //  }
 
-  fun inferExpressionType(e: PowerShellExpression): PowerShellType {
-    when (e) {
-      is PowerShellTypeLiteralExpression -> {
+    fun inferExpressionType(e: PowerShellExpression): PowerShellType {
+        when (e) {
+            is PowerShellTypeLiteralExpression -> {
 //        return e.typeElement.getType() //SOE could happen if not reference
-        val typE = e.typeElement //SOE could happen if not reference
-        if (typE is PowerShellReferenceTypeElement) return typE.getType()
-      }
-      is PowerShellTargetVariableExpression -> {
-        val resolved = e.resolve()
-        if (resolved is PowerShellTargetVariableExpression) {
-          return resolved.getType() //
+                val typE = e.typeElement // SOE could happen if not reference
+                if (typE is PowerShellReferenceTypeElement) return typE.getType()
+            }
+            is PowerShellTargetVariableExpression -> {
+                val resolved = e.resolve()
+                if (resolved is PowerShellTargetVariableExpression) {
+                    return resolved.getType() //
+                }
+            }
         }
-      }
+        return PowerShellType.UNKNOWN
     }
-    return PowerShellType.UNKNOWN
-  }
 }

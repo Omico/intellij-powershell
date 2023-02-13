@@ -9,15 +9,15 @@ import com.intellij.plugin.powershell.psi.impl.PowerShellFile
 import com.intellij.psi.PsiFile
 
 class PowerShellStructureViewFactory : PsiStructureViewFactory {
-  override fun getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder? {
-    if (psiFile !is PowerShellFile) return null
+    override fun getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder? {
+        if (psiFile !is PowerShellFile) return null
 
-    return object : TreeBasedStructureViewBuilder() {
-      override fun createStructureViewModel(editor: Editor?): StructureViewModel {
-        return PowerShellStructureViewModel(psiFile, editor)
-      }
+        return object : TreeBasedStructureViewBuilder() {
+            override fun createStructureViewModel(editor: Editor?): StructureViewModel {
+                return PowerShellStructureViewModel(psiFile, editor)
+            }
 
-      override fun isRootNodeShown() = true
+            override fun isRootNodeShown() = true
+        }
     }
-  }
 }

@@ -1,10 +1,14 @@
+import me.omico.age.spotless.configureSpotless
+import me.omico.age.spotless.defaultEditorConfig
+import me.omico.age.spotless.kotlin
+import me.omico.age.spotless.kotlinGradle
 import org.gradle.kotlin.dsl.support.unzipTo
 import java.net.URL
 
 buildscript {
     repositories {
         mavenCentral()
-        maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
+        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
         gradlePluginPortal()
     }
 }
@@ -12,6 +16,8 @@ buildscript {
 plugins {
     id("org.jetbrains.intellij") version "1.13.0"
     id("org.jetbrains.kotlin.jvm") version "1.8.10"
+    id("com.diffplug.spotless") version "6.15.0"
+    id("me.omico.age.spotless") version "1.0.0-SNAPSHOT"
 }
 
 intellij {
@@ -23,6 +29,22 @@ intellij {
 
 kotlin {
     jvmToolchain(17)
+}
+
+configureSpotless {
+    java {
+        target("src/**/*.java")
+        targetExclude("src/main/gen/**/*.java")
+        googleJavaFormat()
+    }
+    kotlin(
+        editorConfig = mutableMapOf<String, String>().apply {
+            putAll(defaultEditorConfig)
+            // https://github.com/pinterest/ktlint/issues/1786
+            put("ktlint_standard_trailing-comma-on-declaration-site", "disabled")
+        },
+    )
+    kotlinGradle()
 }
 
 sourceSets {
@@ -92,9 +114,9 @@ val refreshPowerShellEditorServices by tasks.registering {
     doLast {
         val version = "3.8.0"
         URL(
-            "https://github.com/PowerShell/PowerShellEditorServices/releases/download/"
-                    + "v$version"
-                    + "/PowerShellEditorServices.zip"
+            "https://github.com/PowerShell/PowerShellEditorServices/releases/download/" +
+                "v$version" +
+                "/PowerShellEditorServices.zip",
         ).openStream().use { input ->
             layout.buildDirectory.file("tmp/PowerShellEditorServices.zip").get().asFile.outputStream().use { output ->
                 input.copyTo(output)

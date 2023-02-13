@@ -9,11 +9,11 @@ import com.intellij.plugin.powershell.lang.lsp.LSPInitMain
 
 class EditorLSPListener : EditorFactoryListener {
 
-  override fun editorReleased(event: EditorFactoryEvent) {
-    LSPInitMain.editorClosed(event.editor)
-  }
+    override fun editorReleased(event: EditorFactoryEvent) {
+        LSPInitMain.editorClosed(event.editor)
+    }
 
-  override fun editorCreated(event: EditorFactoryEvent) {
-    LSPInitMain.editorOpened(event.editor)
-  }
+    override fun editorCreated(event: EditorFactoryEvent) {
+        LSPInitMain.editorOpened(event.editor)
+    }
 }

@@ -1,27 +1,28 @@
 package com.intellij.plugin.powershell.lang.lsp.ide.settings;
 
+import static com.intellij.plugin.powershell.lang.lsp.languagehost.PSLanguageHostUtils.INSTANCE;
+
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.plugin.powershell.lang.lsp.LSPInitMain;
+import javax.swing.JComponent;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-
-import static com.intellij.plugin.powershell.lang.lsp.languagehost.PSLanguageHostUtils.INSTANCE;
-
 public class PowerShellConfigurable implements SearchableConfigurable {
+  public static final Logger LOG =
+      Logger.getInstance(
+          "com.intellij.plugin.powershell.lang.lsp.ide.settings.PowerShellConfigurable");
+  public static String ID = "Setting.PowerShell";
+  public static String NAME = "PowerShell";
   private PowerShellJPanelComponent myPowerShellSettingsComponent;
-  public static final Logger LOG = Logger.getInstance("com.intellij.plugin.powershell.lang.lsp.ide.settings.PowerShellConfigurable");
   private String myOldPsesValue;
   private boolean myOldIsEnabled;
   private String myOldExeValue;
-  public static String ID = "Setting.PowerShell";
-  public static String NAME = "PowerShell";
 
   @NotNull
   @Override
@@ -43,9 +44,9 @@ public class PowerShellConfigurable implements SearchableConfigurable {
 
   @Override
   public boolean isModified() {
-    return !getPSExtensionPathFromForm().equals(StringUtil.notNullize(myOldPsesValue)) ||
-                   !getPowerShellExePathFromForm().equals(StringUtil.notNullize(myOldExeValue)) ||
-                   myOldIsEnabled != getPSJpanel().getIsUseLanguageServer();
+    return !getPSExtensionPathFromForm().equals(StringUtil.notNullize(myOldPsesValue))
+        || !getPowerShellExePathFromForm().equals(StringUtil.notNullize(myOldExeValue))
+        || myOldIsEnabled != getPSJpanel().getIsUseLanguageServer();
   }
 
   @Override
@@ -70,7 +71,8 @@ public class PowerShellConfigurable implements SearchableConfigurable {
     LSPInitMain.PowerShellInfo powerShellInfo = lspInitMain.getState();
     FormUIUtil.validatePowerShellExecutablePath(powerShellExePath);
     String powerShellVersion = getPSJpanel().getPowerShellVersionValue();
-    if (StringUtil.isEmpty(powerShellVersion)) throw new ConfigurationException("Can not detect PowerShell version");
+    if (StringUtil.isEmpty(powerShellVersion))
+      throw new ConfigurationException("Can not detect PowerShell version");
     String editorServicesVersion;
     if (StringUtil.isNotEmpty(psExtensionPath)) {
       try {
@@ -120,5 +122,4 @@ public class PowerShellConfigurable implements SearchableConfigurable {
   private JComponent getSettingsComponent() {
     return getPSJpanel().getMyPanel();
   }
-
 }

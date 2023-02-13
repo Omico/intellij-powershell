@@ -14,22 +14,33 @@ import com.intellij.refactoring.rename.RenameDialog
 import com.intellij.refactoring.rename.RenamePsiElementProcessor
 
 class PowerShellRenamePsiElementProcessor : RenamePsiElementProcessor() {
-  override fun canProcessElement(element: PsiElement): Boolean = element is PowerShellComponent
-  override fun findReferences(element: PsiElement, searchScope: SearchScope, searchInCommentsAndStrings: Boolean): MutableCollection<PsiReference> {
-    if (element is PowerShellComponent && nameHasSubExpression(element)) {//todo it's workaround to resort to findUsage handler because default index does not contain needed tokens
-      val findManager = FindManager.getInstance(element.getProject()) as? FindManagerImpl
-          ?: return super.findReferences(element, searchScope, searchInCommentsAndStrings)
-      val findUsagesManager = findManager.findUsagesManager
-      val findUsagesHandler = findUsagesManager.getFindUsagesHandler(element, true)
-          ?: return super.findReferences(element, searchScope, searchInCommentsAndStrings)
-      val scope = LocalSearchScope(element.containingFile)
-      return findUsagesHandler.findReferencesToHighlight(element, scope)
-    } else return super.findReferences(element, searchScope, searchInCommentsAndStrings)
-  }
-
-  override fun createRenameDialog(project: Project, element: PsiElement, nameSuggestionContext: PsiElement?, editor: Editor?): RenameDialog {
-    return object : RenameDialog(project, element, nameSuggestionContext, editor) {
-      override fun getNewName(): String = nameSuggestionsField.enteredName
+    override fun canProcessElement(element: PsiElement): Boolean = element is PowerShellComponent
+    override fun findReferences(
+        element: PsiElement,
+        searchScope: SearchScope,
+        searchInCommentsAndStrings: Boolean,
+    ): MutableCollection<PsiReference> {
+        if (element is PowerShellComponent && nameHasSubExpression(element)) { // todo it's workaround to resort to findUsage handler because default index does not contain needed tokens
+            val findManager = FindManager.getInstance(element.getProject()) as? FindManagerImpl
+                ?: return super.findReferences(element, searchScope, searchInCommentsAndStrings)
+            val findUsagesManager = findManager.findUsagesManager
+            val findUsagesHandler = findUsagesManager.getFindUsagesHandler(element, true)
+                ?: return super.findReferences(element, searchScope, searchInCommentsAndStrings)
+            val scope = LocalSearchScope(element.containingFile)
+            return findUsagesHandler.findReferencesToHighlight(element, scope)
+        } else {
+            return super.findReferences(element, searchScope, searchInCommentsAndStrings)
+        }
     }
-  }
+
+    override fun createRenameDialog(
+        project: Project,
+        element: PsiElement,
+        nameSuggestionContext: PsiElement?,
+        editor: Editor?,
+    ): RenameDialog {
+        return object : RenameDialog(project, element, nameSuggestionContext, editor) {
+            override fun getNewName(): String = nameSuggestionsField.enteredName
+        }
+    }
 }

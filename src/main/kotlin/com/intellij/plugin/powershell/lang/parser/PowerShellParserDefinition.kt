@@ -21,7 +21,7 @@ import com.intellij.psi.tree.TokenSet
  */
 class PowerShellParserDefinition : ParserDefinition {
 
-  private val FILE = IFileElementType(PowerShellLanguage.INSTANCE)
+    private val FILE = IFileElementType(PowerShellLanguage.INSTANCE)
 
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
         return PowerShellFile(viewProvider)
@@ -32,7 +32,7 @@ class PowerShellParserDefinition : ParserDefinition {
     }
 
     override fun getStringLiteralElements(): TokenSet {
-      return TokenSet.create(PowerShellTypes.STRING_LITERAL_EXPRESSION)
+        return TokenSet.create(PowerShellTypes.STRING_LITERAL_EXPRESSION)
     }
 
     override fun getFileNodeType(): IFileElementType {
@@ -56,7 +56,6 @@ class PowerShellParserDefinition : ParserDefinition {
     }
 
     override fun createParser(project: Project?): PsiParser {
-      return PowerShellParser()
+        return PowerShellParser()
     }
-
 }

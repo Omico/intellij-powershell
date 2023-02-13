@@ -1,19 +1,22 @@
 package com.intellij.plugin.powershell.lang.util;
 
+import static com.intellij.openapi.util.text.StringUtil.isPrintableUnicode;
+
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.util.text.StringUtilRt;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.intellij.openapi.util.text.StringUtil.isPrintableUnicode;
-
 public class PowerShellStringUtil {
 
-  public static boolean parseExpandableString(@NotNull String chars, @NotNull StringBuilder outChars, @NotNull int[] sourceOffsets,
-                                              @Nullable Character quoteToEscape/*, @NotNull char... endChars*/) {
+  public static boolean parseExpandableString(
+      @NotNull String chars,
+      @NotNull StringBuilder outChars,
+      @NotNull int[] sourceOffsets,
+      @Nullable Character quoteToEscape /*, @NotNull char... endChars*/) {
     assert sourceOffsets.length == chars.length() + 1;
-    if (/*chars.indexOf('\\') < 0 && */chars.indexOf('`') < 0 && chars.indexOf('"') < 0) {
+    if (
+    /*chars.indexOf('\\') < 0 && */ chars.indexOf('`') < 0 && chars.indexOf('"') < 0) {
       outChars.append(chars);
       for (int i = 0; i < sourceOffsets.length; i++) {
         sourceOffsets[i] = i;
@@ -34,7 +37,7 @@ public class PowerShellStringUtil {
         if (nextChar == quoteToEscape) {
           outChars.append(nextChar);
         } else {
-          outChars.append(escChar).append(nextChar);//-> invalid string
+          outChars.append(escChar).append(nextChar); // -> invalid string
         }
       } else if (escChar == '`' /*|| escChar == '\\'*/) {
         if (index == chars.length()) return false;
@@ -69,11 +72,11 @@ public class PowerShellStringUtil {
             break;
 
           case 'a':
-            outChars.append(" ");//audio alert bell/beep
+            outChars.append(" "); // audio alert bell/beep
             break;
 
           case 'v':
-            outChars.append(" ");//Vertical tab (use with printer output)
+            outChars.append(" "); // Vertical tab (use with printer output)
             break;
 
           case '0':
@@ -115,7 +118,7 @@ public class PowerShellStringUtil {
             if (index + 4 <= chars.length()) {
               try {
                 int code = Integer.parseInt(chars.substring(index, index + 4), 16);
-                //line separators are invalid here
+                // line separators are invalid here
                 if (code == 0x000a || code == 0x000d) return false;
                 nextChar = chars.charAt(index);
                 if (nextChar == '+' || nextChar == '-') return false;
@@ -143,13 +146,13 @@ public class PowerShellStringUtil {
     return true;
   }
 
-
   @NotNull
-  public static StringBuilder escapeStringCharacters(@NotNull String str,
-                                                     @Nullable String additionalChars,
-                                                     boolean escapeUnicode,
-                                                     boolean escapeBacktick,
-                                                     @NotNull @NonNls StringBuilder buffer/*, char quoteChar, char quoteEscapeChar*/) {
+  public static StringBuilder escapeStringCharacters(
+      @NotNull String str,
+      @Nullable String additionalChars,
+      boolean escapeUnicode,
+      boolean escapeBacktick,
+      @NotNull @NonNls StringBuilder buffer /*, char quoteChar, char quoteEscapeChar*/) {
     char prev = 0;
     final int length = str.length();
     for (int idx = 0; idx < length; idx++) {
@@ -176,7 +179,7 @@ public class PowerShellStringUtil {
           break;
 
         case 0:
-          buffer.append("`0");//null
+          buffer.append("`0"); // null
           break;
 
         default:
@@ -187,13 +190,13 @@ public class PowerShellStringUtil {
     return buffer;
   }
 
-
   @NotNull
-  public static StringBuilder escapeHereStringCharacters(@NotNull String str,
-                                                         @Nullable String additionalChars,
-                                                         boolean escapeUnicode,
-                                                         boolean escapeBacktick,
-                                                         @NotNull @NonNls StringBuilder buffer/*, char quoteChar, char quoteEscapeChar*/) {
+  public static StringBuilder escapeHereStringCharacters(
+      @NotNull String str,
+      @Nullable String additionalChars,
+      boolean escapeUnicode,
+      boolean escapeBacktick,
+      @NotNull @NonNls StringBuilder buffer /*, char quoteChar, char quoteEscapeChar*/) {
     char prev = 0;
     final int length = str.length();
     for (int idx = 0; idx < length; idx++) {
@@ -204,13 +207,21 @@ public class PowerShellStringUtil {
     return buffer;
   }
 
-  private static void escapeDefaultChars(@Nullable String charsToEscape, boolean escapeUnicode, boolean escapeBacktick, @NonNls @NotNull StringBuilder buffer, char prev, char ch) {
+  private static void escapeDefaultChars(
+      @Nullable String charsToEscape,
+      boolean escapeUnicode,
+      boolean escapeBacktick,
+      @NonNls @NotNull StringBuilder buffer,
+      char prev,
+      char ch) {
     if (escapeBacktick && ch == '`' /*&& prev != '`'*/) {
       buffer.append("``");
-    } else if (charsToEscape != null && charsToEscape.indexOf(ch) > -1 && (escapeBacktick || prev != '`')) {
+    } else if (charsToEscape != null
+        && charsToEscape.indexOf(ch) > -1
+        && (escapeBacktick || prev != '`')) {
       buffer.append("`").append(ch);
     } else if (escapeUnicode && !isPrintableUnicode(ch)) {
-//      CharSequence hexCode = StringUtilRt.toUpperCase(Integer.toHexString(ch));
+      //      CharSequence hexCode = StringUtilRt.toUpperCase(Integer.toHexString(ch));
       CharSequence hexCode = StringUtil.toUpperCase(Integer.toHexString(ch));
       buffer.append("\\u");
       int paddingCount = 4 - hexCode.length();

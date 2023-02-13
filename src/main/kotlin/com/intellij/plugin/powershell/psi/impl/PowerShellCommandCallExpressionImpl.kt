@@ -12,17 +12,20 @@ import com.intellij.psi.PsiElement
 /**
  * Andrey 24/08/17.
  */
-open class PowerShellCommandCallExpressionImpl(node: ASTNode) : PowerShellReferencePsiElementImpl(node), PowerShellCallableReference, PowerShellExpression {
-  override fun getType(): PowerShellType {
-    return PowerShellTypeUtil.inferExpressionType(this)
-  }
+open class PowerShellCommandCallExpressionImpl(node: ASTNode) :
+    PowerShellReferencePsiElementImpl(node),
+    PowerShellCallableReference,
+    PowerShellExpression {
+    override fun getType(): PowerShellType {
+        return PowerShellTypeUtil.inferExpressionType(this)
+    }
 
-  override fun getRangeInElement(): TextRange {
-    val refRange = getNameElement()?.textRange ?: this.textRange
-    return TextRange(refRange.startOffset - textRange.startOffset, refRange.endOffset - textRange.startOffset)
-  }
+    override fun getRangeInElement(): TextRange {
+        val refRange = getNameElement()?.textRange ?: this.textRange
+        return TextRange(refRange.startOffset - textRange.startOffset, refRange.endOffset - textRange.startOffset)
+    }
 
-  override fun getNameElement(): PsiElement? = findChildByClass(PowerShellCommandName::class.java)?.identifier
+    override fun getNameElement(): PsiElement? = findChildByClass(PowerShellCommandName::class.java)?.identifier
 
-  override fun getCanonicalText(): String = getNameElement()?.text ?: super.getCanonicalText()
+    override fun getCanonicalText(): String = getNameElement()?.text ?: super.getCanonicalText()
 }

@@ -11,45 +11,57 @@ import com.intellij.plugin.powershell.psi.PowerShellExpression
 import com.intellij.plugin.powershell.psi.PowerShellQualifiedReferenceElement
 import com.intellij.plugin.powershell.psi.types.PowerShellType
 
-abstract class PowerShellQualifiedReferenceExpression(node: ASTNode) : PowerShellQualifiedReferenceElementImpl<PowerShellExpression>(node), PowerShellQualifiedReferenceElement<PowerShellExpression>, PowerShellExpression {
+abstract class PowerShellQualifiedReferenceExpression(node: ASTNode) :
+    PowerShellQualifiedReferenceElementImpl<PowerShellExpression>(node),
+    PowerShellQualifiedReferenceElement<PowerShellExpression>,
+    PowerShellExpression {
 
-  val LOG = Logger.getInstance(javaClass)
-  override fun getType(): PowerShellType {
-    val resolved = resolve()
-    if (resolved != null) {
-      return inferTypeFromResolved(resolved)
+    val LOG = Logger.getInstance(javaClass)
+    override fun getType(): PowerShellType {
+        val resolved = resolve()
+        if (resolved != null) {
+            return inferTypeFromResolved(resolved)
+        }
+        return PowerShellType.UNKNOWN
     }
-    return PowerShellType.UNKNOWN
-  }
 
-  protected open fun inferTypeFromResolved(resolved: PowerShellComponent): PowerShellType {
-    //todo create function type and return function image here
-    if (resolved is PowerShellAttributesHolder) resolved.getAttributeList().mapNotNull { it.typeLiteralExpression }.forEach { return it.getType() }
-    return PowerShellType.UNKNOWN
-  }
-
-  override fun getQualifier(): PowerShellExpression? = findChildByClass(PowerShellExpression::class.java)
-
-  override fun multiResolve(incompleteCode: Boolean): Array<PowerShellResolveResult> {
-    val qType = getQualifierType()
-    if (qType == PowerShellType.UNKNOWN) {
-      LOG.debug("Type is unknown for reference: '$text'")
-      return emptyArray()
+    protected open fun inferTypeFromResolved(resolved: PowerShellComponent): PowerShellType {
+        // todo create function type and return function image here
+        if (resolved is PowerShellAttributesHolder) {
+            resolved.getAttributeList().mapNotNull { it.typeLiteralExpression }
+                .forEach { return it.getType() }
+        }
+        return PowerShellType.UNKNOWN
     }
-    val resolveProcessor = PowerShellResolveUtil.getMemberScopeProcessor(this)
-    if (resolveProcessor != null && qType != null) {
-      if (PowerShellResolveUtil.processMembersForType(qType, incompleteCode, resolveProcessor)) return extractResults(resolveProcessor)
+
+    override fun getQualifier(): PowerShellExpression? = findChildByClass(PowerShellExpression::class.java)
+
+    override fun multiResolve(incompleteCode: Boolean): Array<PowerShellResolveResult> {
+        val qType = getQualifierType()
+        if (qType == PowerShellType.UNKNOWN) {
+            LOG.debug("Type is unknown for reference: '$text'")
+            return emptyArray()
+        }
+        val resolveProcessor = PowerShellResolveUtil.getMemberScopeProcessor(this)
+        if (resolveProcessor != null && qType != null) {
+            if (PowerShellResolveUtil.processMembersForType(
+                    qType,
+                    incompleteCode,
+                    resolveProcessor,
+                )
+            ) {
+                return extractResults(resolveProcessor)
+            }
+        }
+        return super.multiResolve(incompleteCode)
     }
-    return super.multiResolve(incompleteCode)
-  }
 
-  protected fun extractResults(resolveProcessor: PowerShellMemberScopeProcessor): Array<PowerShellResolveResult> {
-    val res = resolveProcessor.getResult()
-    return Array(res.size) { res[it] }
-  }
+    protected fun extractResults(resolveProcessor: PowerShellMemberScopeProcessor): Array<PowerShellResolveResult> {
+        val res = resolveProcessor.getResult()
+        return Array(res.size) { res[it] }
+    }
 
-  protected fun getQualifierType(): PowerShellType? {
-    return qualifier?.getType()
-  }
-
+    protected fun getQualifierType(): PowerShellType? {
+        return qualifier?.getType()
+    }
 }

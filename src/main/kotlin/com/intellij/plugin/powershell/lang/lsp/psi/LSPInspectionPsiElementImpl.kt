@@ -8,34 +8,36 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.FakePsiElement
 
-class LSPInspectionPsiElementImpl(private val myContainingFile: PsiFile, private val myRange: TextRange) : FakePsiElement(), LSPInspectionPsiElement {
+class LSPInspectionPsiElementImpl(private val myContainingFile: PsiFile, private val myRange: TextRange) :
+    FakePsiElement(), LSPInspectionPsiElement {
 
-  constructor(parent: PsiFile, range: TextRange, name: String) : this(parent, range) {
-    myName = name
-  }
+    constructor(parent: PsiFile, range: TextRange, name: String) : this(parent, range) {
+        myName = name
+    }
 
-  override fun getContainingFile(): PsiFile {
-    return myContainingFile
-  }
-  override fun getLanguage(): Language= PowerShellLanguage.INSTANCE
+    override fun getContainingFile(): PsiFile {
+        return myContainingFile
+    }
 
-  override fun getTextRange(): TextRange? =  myRange
+    override fun getLanguage(): Language = PowerShellLanguage.INSTANCE
 
-  override fun isPhysical(): Boolean = true
+    override fun getTextRange(): TextRange = myRange
 
-  private var myName: String? = null
+    override fun isPhysical(): Boolean = true
 
-  override fun toString(): String {
-    return "Inspection LSP element. Text: $text; File: ${myContainingFile.name}"
-  }
+    private var myName: String? = null
 
-  override fun getPresentation(): ItemPresentation {
-    return this
-  }
+    override fun toString(): String {
+        return "Inspection LSP element. Text: $text; File: ${myContainingFile.name}"
+    }
 
-  override fun getName(): String? {
-    return myName ?: super.getName()
-  }
+    override fun getPresentation(): ItemPresentation {
+        return this
+    }
 
-  override fun getParent(): PsiElement = myContainingFile
+    override fun getName(): String? {
+        return myName ?: super.getName()
+    }
+
+    override fun getParent(): PsiElement = myContainingFile
 }

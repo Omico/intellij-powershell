@@ -18,34 +18,46 @@ import javax.swing.Icon
 /**
  * Andrey 17/07/17.
  */
-class PowerShellFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, PowerShellLanguage.INSTANCE), PowerShellPsiElement {
-  override fun getFileType(): FileType {
-    return PowerShellFileType()
-  }
-
-  override fun getPresentation(): ItemPresentation {
-    return object : ItemPresentation {
-      override fun getLocationString(): String? {
-        return viewProvider.virtualFile.path
-      }
-
-      override fun getIcon(unused: Boolean): Icon {
-        return PowerShellIcons.FILE
-      }
-
-      override fun getPresentableText(): String {
-        return name
-      }
+class PowerShellFile(viewProvider: FileViewProvider) :
+    PsiFileBase(viewProvider, PowerShellLanguage.INSTANCE),
+    PowerShellPsiElement {
+    override fun getFileType(): FileType {
+        return PowerShellFileType()
     }
-  }
 
-  override fun processDeclarations(processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement?, place: PsiElement): Boolean {
-    return processDeclarationsImpl(processor, state, lastParent, place)
-  }
+    override fun getPresentation(): ItemPresentation {
+        return object : ItemPresentation {
+            override fun getLocationString(): String {
+                return viewProvider.virtualFile.path
+            }
 
-  private fun processDeclarationsImpl(processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement?, place: PsiElement): Boolean {
-    val result = HashSet<PowerShellComponent>()
-    PowerShellResolveUtil.collectChildrenDeclarations(this, result, processor, state, lastParent)
-    return result.none { place.textOffset > it.textOffset && processor.execute(it, state).not() }
-  }
+            override fun getIcon(unused: Boolean): Icon {
+                return PowerShellIcons.FILE
+            }
+
+            override fun getPresentableText(): String {
+                return name
+            }
+        }
+    }
+
+    override fun processDeclarations(
+        processor: PsiScopeProcessor,
+        state: ResolveState,
+        lastParent: PsiElement?,
+        place: PsiElement,
+    ): Boolean {
+        return processDeclarationsImpl(processor, state, lastParent, place)
+    }
+
+    private fun processDeclarationsImpl(
+        processor: PsiScopeProcessor,
+        state: ResolveState,
+        lastParent: PsiElement?,
+        place: PsiElement,
+    ): Boolean {
+        val result = HashSet<PowerShellComponent>()
+        PowerShellResolveUtil.collectChildrenDeclarations(this, result, processor, state, lastParent)
+        return result.none { place.textOffset > it.textOffset && processor.execute(it, state).not() }
+    }
 }

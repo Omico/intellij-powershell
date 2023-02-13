@@ -10,15 +10,15 @@ import com.intellij.psi.codeStyle.CustomCodeStyleSettings
  */
 class PowerShellCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
 
-  override fun getConfigurableDisplayName(): String {
-    return "PowerShell"
-  }
+    override fun getConfigurableDisplayName(): String {
+        return "PowerShell"
+    }
 
-  override fun createSettingsPage(settings: CodeStyleSettings, originalSettings: CodeStyleSettings): Configurable {
-    return PowerShellCodeStyleConfigurable(settings, originalSettings)
-  }
+    override fun createSettingsPage(settings: CodeStyleSettings, originalSettings: CodeStyleSettings): Configurable {
+        return PowerShellCodeStyleConfigurable(settings, originalSettings)
+    }
 
-  override fun createCustomSettings(settings: CodeStyleSettings): CustomCodeStyleSettings {
-    return PowerShellCodeStyleSettings(settings)
-  }
+    override fun createCustomSettings(settings: CodeStyleSettings): CustomCodeStyleSettings {
+        return PowerShellCodeStyleSettings(settings)
+    }
 }

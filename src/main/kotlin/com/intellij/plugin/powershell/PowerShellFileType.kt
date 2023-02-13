@@ -9,24 +9,24 @@ import javax.swing.Icon
  */
 class PowerShellFileType : LanguageFileType(PowerShellLanguage.INSTANCE) {
 
-  companion object {
-    @JvmStatic
-    val INSTANCE = PowerShellFileType()
-  }
+    companion object {
+        @JvmStatic
+        val INSTANCE = PowerShellFileType()
+    }
 
-  override fun getIcon(): Icon? {
-    return PowerShellIcons.FILE
-  }
+    override fun getIcon(): Icon {
+        return PowerShellIcons.FILE
+    }
 
-  override fun getName(): String {
-    return "PowerShell"
-  }
+    override fun getName(): String {
+        return "PowerShell"
+    }
 
-  override fun getDefaultExtension(): String {
-    return "ps1"
-  }
+    override fun getDefaultExtension(): String {
+        return "ps1"
+    }
 
-  override fun getDescription(): String {
-    return "PowerShell file"
-  }
+    override fun getDescription(): String {
+        return "PowerShell file"
+    }
 }

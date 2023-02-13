@@ -8,12 +8,15 @@ import com.intellij.plugin.powershell.psi.PowerShellTypeDeclaration
 import com.intellij.plugin.powershell.psi.types.PowerShellType
 import com.intellij.plugin.powershell.psi.types.impl.PowerShellObjectType
 
-open class PowerShellMethodDeclarationImpl(node: ASTNode) : PowerShellCallableDeclarationImpl(node), PowerShellCallableDeclaration, PowerShellMemberDeclaration {
-  override fun getContainingClass(): PowerShellTypeDeclaration? {
-    return (context as? PowerShellBlockBody)?.context as? PowerShellTypeDeclaration
-  }
+open class PowerShellMethodDeclarationImpl(node: ASTNode) :
+    PowerShellCallableDeclarationImpl(node),
+    PowerShellCallableDeclaration,
+    PowerShellMemberDeclaration {
+    override fun getContainingClass(): PowerShellTypeDeclaration? {
+        return (context as? PowerShellBlockBody)?.context as? PowerShellTypeDeclaration
+    }
 
-  override fun getReturnType(): PowerShellType? {
-    return PowerShellObjectType()//stub
-  }
+    override fun getReturnType(): PowerShellType? {
+        return PowerShellObjectType() // stub
+    }
 }

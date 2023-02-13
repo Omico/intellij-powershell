@@ -14,49 +14,55 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 
+abstract class PowerShellScriptContextType(
+    id: String,
+    presentableName: String,
+    baseContext: Class<out TemplateContextType>,
+) : TemplateContextType(id, presentableName, baseContext) {
 
-abstract class PowerShellScriptContextType(id: String, presentableName: String, baseContext: Class<out TemplateContextType>)
-  : TemplateContextType(id, presentableName, baseContext) {
+    override fun isInContext(file: PsiFile, offset: Int): Boolean {
+        val place = file.findElementAt(offset)
+        return if (place == null || place is PsiWhiteSpace || place is PsiComment) {
+            false
+        } else {
+            file is PowerShellFile && isInContext(place)
+        }
+    }
 
-  override fun isInContext(file: PsiFile, offset: Int): Boolean {
-    val place = file.findElementAt(offset)
-    return if (place == null || place is PsiWhiteSpace || place is PsiComment) {
-      false
-    } else file is PowerShellFile && isInContext(place)
-  }
+    protected open fun isInContext(place: PsiElement) = true
 
-  protected open fun isInContext(place: PsiElement) = true
-
-  override fun createHighlighter(): SyntaxHighlighter? =
-      SyntaxHighlighterFactory.getSyntaxHighlighter(PowerShellFileType.INSTANCE, null, null)
+    override fun createHighlighter(): SyntaxHighlighter? =
+        SyntaxHighlighterFactory.getSyntaxHighlighter(PowerShellFileType.INSTANCE, null, null)
 }
 
 open class PowerShellLanguageContext(id: String, presentableName: String, baseContext: Class<out TemplateContextType>) :
     PowerShellScriptContextType(id, presentableName, baseContext) {
-  @Suppress("unused")
-  constructor() : this("powershell.context.file", "PowerShell", EverywhereContextType::class.java)
+    @Suppress("unused")
+    constructor() : this("powershell.context.file", "PowerShell", EverywhereContextType::class.java)
 }
 
-class PowerShellDeclarationContext : PowerShellLanguageContext("powershell.context.declaration", "Declaration", PowerShellLanguageContext::class.java) {
+class PowerShellDeclarationContext :
+    PowerShellLanguageContext("powershell.context.declaration", "Declaration", PowerShellLanguageContext::class.java) {
 
-  override fun isInContext(place: PsiElement): Boolean = isDeclarationContext(place)
+    override fun isInContext(place: PsiElement): Boolean = isDeclarationContext(place)
 
-  private fun isDeclarationContext(place: PsiElement): Boolean {
-    val psiElement = place.context ?: return false
+    private fun isDeclarationContext(place: PsiElement): Boolean {
+        val psiElement = place.context ?: return false
 
-    return psiElement.context is PowerShellComponent || psiElement.context is PowerShellFile
-  }
+        return psiElement.context is PowerShellComponent || psiElement.context is PowerShellFile
+    }
 }
 
-class PowerShellStatementContext : PowerShellLanguageContext("powershell.context.statement", "Statement", PowerShellLanguageContext::class.java) {
+class PowerShellStatementContext :
+    PowerShellLanguageContext("powershell.context.statement", "Statement", PowerShellLanguageContext::class.java) {
 
-  override fun isInContext(place: PsiElement): Boolean = isStatementContext(place)
+    override fun isInContext(place: PsiElement): Boolean = isStatementContext(place)
 
-  private fun isStatementContext(place: PsiElement): Boolean {
-    val psiElement = place.context ?: return false
-    val elementContext = psiElement.context
-    if (elementContext is PowerShellCommandName) return true
+    private fun isStatementContext(place: PsiElement): Boolean {
+        val psiElement = place.context ?: return false
+        val elementContext = psiElement.context
+        if (elementContext is PowerShellCommandName) return true
 
-    return elementContext is PowerShellBlockBody || elementContext is PowerShellFile
-  }
+        return elementContext is PowerShellBlockBody || elementContext is PowerShellFile
+    }
 }

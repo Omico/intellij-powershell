@@ -7,6 +7,6 @@ import com.intellij.psi.PsiNamedElement
  * Andrey 15/08/17.
  */
 interface PowerShellComponent : PowerShellPsiElement, PsiNamedElement, PsiNameIdentifierOwner {
-  override fun getName(): String?
-  override fun getNameIdentifier(): PowerShellIdentifier?
+    override fun getName(): String?
+    override fun getNameIdentifier(): PowerShellIdentifier?
 }
