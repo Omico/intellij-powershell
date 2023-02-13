@@ -295,6 +295,7 @@ open class PowerShellBlockImpl(
             isAttributeArgument(node) -> Indent.getContinuationIndent()
             type === EXPANDABLE_HERE_STRING_END -> Indent.getAbsoluteNoneIndent()
             isArrayElement(node) -> Indent.getNormalIndent()
+            isParenthesizedExpressionContainsBacktick(node) -> Indent.getNormalIndent()
             else -> Indent.getNoneIndent()
         }
     }

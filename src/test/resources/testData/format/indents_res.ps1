@@ -39,3 +39,7 @@ function d()
         6
     )
 }
+$x = (
+    Write-Output `
+"Hello"
+)

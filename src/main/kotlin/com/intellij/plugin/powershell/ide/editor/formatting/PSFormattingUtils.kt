@@ -258,6 +258,10 @@ internal fun isArrayElement(node: ASTNode): Boolean {
     return node.psi is PowerShellExpression && node.treeParent?.elementType === PowerShellTypes.ARRAY_EXPRESSION
 }
 
+internal fun isParenthesizedExpressionContainsBacktick(node: ASTNode): Boolean {
+    return isParenthesizedExpressionContext(node) && node.psi.text.contains("`")
+}
+
 internal fun isInvocationExpressionQualifier(node: ASTNode): Boolean {
     if (node.treeParent?.elementType !== PowerShellTypes.INVOCATION_EXPRESSION) return false
     val prevElement = findSiblingSkipping(node, arrayOf(PowerShellTypes.NLS, TokenType.WHITE_SPACE), false)?.elementType
