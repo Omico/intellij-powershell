@@ -137,6 +137,10 @@ val refreshPowerShellEditorServices by tasks.registering {
     }
 }
 
+tasks.patchPluginXml{
+    sinceBuild.set("223")
+}
+
 tasks.prepareSandbox {
     dependsOn(downloadMissingPowerShellModules)
     from("${project.rootDir}/language_host/current") {

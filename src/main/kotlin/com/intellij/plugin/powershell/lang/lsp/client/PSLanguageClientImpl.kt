@@ -13,7 +13,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.plugin.powershell.lang.lsp.ide.EditorEventManager
 import com.intellij.plugin.powershell.lang.lsp.languagehost.LanguageServerEndpoint
 import com.intellij.plugin.powershell.lang.lsp.util.getTextEditor
-import com.intellij.ui.GuiUtils
+import com.intellij.util.ModalityUiUtil
 import org.eclipse.lsp4j.ApplyWorkspaceEditParams
 import org.eclipse.lsp4j.ApplyWorkspaceEditResponse
 import org.eclipse.lsp4j.Diagnostic
@@ -61,10 +61,9 @@ class PSLanguageClientImpl(private val project: Project) : LanguageClient, Endpo
                 return@computeAsync unsupported
             }
             val descriptor = OpenFileDescriptor(project, vFile, 0)
-            GuiUtils.invokeLaterIfNeeded(
-                { FileEditorManager.getInstance(project).openTextEditor(descriptor, true) },
-                ModalityState.NON_MODAL,
-            )
+            ModalityUiUtil.invokeLaterIfNeeded(ModalityState.NON_MODAL) {
+                FileEditorManager.getInstance(project).openTextEditor(descriptor, true)
+            }
             return@computeAsync ok
         }
     }
