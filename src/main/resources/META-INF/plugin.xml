@@ -1,16 +1,17 @@
 <idea-plugin>
-  <id>com.intellij.plugin.adernov.powershell</id>
-  <name>PowerShell</name>
-  <version>2.0.9</version>
-  <vendor email="andrey.dernov@gmail.com" url="https://github.com/ant-druha/PowerShell/issues">andrey.dernov@gmail.com</vendor>
+    <id>com.intellij.plugin.adernov.powershell</id>
+    <name>PowerShell</name>
+    <vendor email="andrey.dernov@gmail.com" url="https://github.com/ant-druha/PowerShell/issues">
+        andrey.dernov@gmail.com
+    </vendor>
 
-  <description><![CDATA[
+    <description><![CDATA[
     Provides <a href="https://docs.microsoft.com/en-us/powershell/scripting/powershell-scripting">PowerShell</a> intellisense and script execution support for IntelliJ IDEs.<br>
     <br>
     <b>Plugin page:</b> <a href="https://plugins.jetbrains.com/plugin/10249">https://plugins.jetbrains.com/plugin/10249</a>
     ]]></description>
 
-  <change-notes><![CDATA[
+    <change-notes><![CDATA[
   <html lang="en">
         <dl>
           <dt>2.0.10 update<br></dt>
@@ -18,7 +19,7 @@
 
           <dt>2.0.9 update<br></dt>
           <dd>&#183; 2021.3 compatibility fixes;</dd>
-          
+
           <dt>2.0.8 update<br></dt>
           <dd>&#183; 2021.3 compatibility fixes;</dd>
           <dd>&#183; Run Configuration: Path Macros for Working Directory paths.</dd>
@@ -31,13 +32,13 @@
           <dt>2.0.6 update<br></dt>
           <dd>&#183; <a href="https://github.com/ant-druha/intellij-powershell/issues/40">40</a> - Run configuration keeps getting renamed when opening or editing.</dd>
           <dd>&#183; 2021.1 version compatibility</dd>
-          
+
           <dt>2.0.5 update<br></dt>
           <dd>&#183; <a href="https://github.com/ant-druha/intellij-powershell/pull/48">48</a> - Adds simplest code folding: for code blocks, arrays.</dd>
 
           <dt>2.0.4 Bug fix update<br></dt>
           <dd>&#183; <a href="https://github.com/ant-druha/intellij-powershell/issues/38">38</a> - UnsupportedClassVersionError running 2019.3 under 1.8 JDK.</dd>
-          
+
           <dt>2.0.3 Bug fix update<br></dt>
           <dd>&#183; <a href="https://github.com/ant-druha/intellij-powershell/issues/33">33</a> - Get rid of implicit dependency on Java plugin;</dd>
           <dd>&#183; Bug fixes and Platform API maintenance update.</dd>
@@ -48,7 +49,7 @@
           <dt>2.0.1 Bug fix update<br></dt>
           <dd>&#183; <a href="https://github.com/ant-druha/PowerShell/issues/10">10</a> - Script Arguments not working as expected;</dd>
           <dd>&#183; <a href="https://github.com/ant-druha/PowerShell/issues/12">12</a> - Memory (project) leak in plugin.</dd>
-          
+
           <dt>2.0.0 Adds support for PowerShell ScriptAnalyzer code checker in IDE Editor<br></dt>
           <dd>&#183; <a href="https://github.com/ant-druha/PowerShell/issues/9">9</a> - PowerShell ScriptAnalyzer support in IDE Editor;</dd>
           <dd>&#183; <a href="https://github.com/ant-druha/PowerShell/issues/6">6</a> - Update PowerShell Language server version;</dd>
@@ -56,7 +57,7 @@
           <dd>&#183; <a href="https://github.com/ant-druha/PowerShell/issues/3">3</a> - Run/Debug configuration: ability to set working directory;</dd>
           <dd>&#183; <a href="https://github.com/ant-druha/PowerShell/issues/2">2</a> - NullPointerException during normal IDE operation;</dd>
           <dd>&#183; <a href="https://github.com/ant-druha/PowerShell/issues/1">1</a> - Exception on PyCharm launch.</dd>
-          
+
           <dt>1.1.1 Adds integrated PowerShell console<br></dt>
           <dd>&#183; <a href="https://bitbucket.org/adernov/powershell/issues/22">22</a> - Integrated PowerShell Console;</dd>
           <dd>&#183; <a href="https://bitbucket.org/adernov/powershell/issues/18">18</a> - Remote files editing with 'psedit' command in PowerShell console.</dd>
@@ -67,7 +68,7 @@
           <dd>&#183; <a href="https://bitbucket.org/adernov/powershell/issues/20">20</a> - Handle drive letters in unc path;</dd>
           <dd>&#183; <a href="https://bitbucket.org/adernov/powershell/issues/21">21</a> - NCDFE if IntelliLang plugin is not installed.</dd>
 
-          
+
           <dt>1.0.2 Update<br></dt>
           <dd>&#183; <a href="https://bitbucket.org/adernov/powershell/issues/11">11</a> - "using" keyword not picked up in;</dd>
           <dd>&#183; More pre-defined <a href="https://www.jetbrains.com/help/idea/live-templates.html">Live Templates</a> snippets;</dd>
@@ -108,114 +109,124 @@
         </dl>
   </html>
     ]]>
-  </change-notes>
+    </change-notes>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
-  <depends>com.intellij.modules.platform</depends>
-  <depends>com.intellij.modules.lang</depends>
-  <depends optional="true" config-file="injection.xml">org.intellij.intelliLang</depends>
-  <depends optional="true" config-file="powerShellConsole.xml">org.jetbrains.plugins.terminal</depends>
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends optional="true" config-file="injection.xml">org.intellij.intelliLang</depends>
+    <depends optional="true" config-file="powerShellConsole.xml">org.jetbrains.plugins.terminal</depends>
 
-  <extensions defaultExtensionNs="com.intellij">
+    <extensions defaultExtensionNs="com.intellij">
 
-    <fileType name="PowerShell" language="PowerShell" extensions="ps1;psm1;psd1" 
-              implementationClass="com.intellij.plugin.powershell.PowerShellFileType" />
+        <fileType name="PowerShell" language="PowerShell" extensions="ps1;psm1;psd1"
+                  implementationClass="com.intellij.plugin.powershell.PowerShellFileType"/>
 
-    <lang.parserDefinition language="PowerShell"
-                           implementationClass="com.intellij.plugin.powershell.lang.parser.PowerShellParserDefinition"/>
+        <lang.parserDefinition language="PowerShell"
+                               implementationClass="com.intellij.plugin.powershell.lang.parser.PowerShellParserDefinition"/>
 
-    <lang.syntaxHighlighterFactory language="PowerShell"
-                                   implementationClass="com.intellij.plugin.powershell.ide.editor.highlighting.PowerShellSyntaxHighlighterFactory"/>
+        <lang.syntaxHighlighterFactory language="PowerShell"
+                                       implementationClass="com.intellij.plugin.powershell.ide.editor.highlighting.PowerShellSyntaxHighlighterFactory"/>
 
-    <colorSettingsPage
-        implementation="com.intellij.plugin.powershell.ide.editor.highlighting.PowerShellColorSettingsPage"/>
+        <colorSettingsPage
+                implementation="com.intellij.plugin.powershell.ide.editor.highlighting.PowerShellColorSettingsPage"/>
 
-    <annotator language="PowerShell"
-               implementationClass="com.intellij.plugin.powershell.lang.PowerShellAnnotator"/>
+        <annotator language="PowerShell"
+                   implementationClass="com.intellij.plugin.powershell.lang.PowerShellAnnotator"/>
 
-    <lang.formatter language="PowerShell"
-                    implementationClass="com.intellij.plugin.powershell.ide.editor.formatting.PowerShellFormattingModelBuilder"/>
+        <lang.formatter language="PowerShell"
+                        implementationClass="com.intellij.plugin.powershell.ide.editor.formatting.PowerShellFormattingModelBuilder"/>
 
-    <langCodeStyleSettingsProvider
-        implementation="com.intellij.plugin.powershell.ide.editor.formatting.PowerShellLanguageCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider
+                implementation="com.intellij.plugin.powershell.ide.editor.formatting.PowerShellLanguageCodeStyleSettingsProvider"/>
 
-    <codeStyleSettingsProvider
-        implementation="com.intellij.plugin.powershell.ide.editor.formatting.PowerShellCodeStyleSettingsProvider"/>
-
-
-    <lang.commenter language="PowerShell"
-                    implementationClass="com.intellij.plugin.powershell.ide.editor.PowerShellCommenter"/>
+        <codeStyleSettingsProvider
+                implementation="com.intellij.plugin.powershell.ide.editor.formatting.PowerShellCodeStyleSettingsProvider"/>
 
 
-    <lang.findUsagesProvider language="PowerShell"
-                             implementationClass="com.intellij.plugin.powershell.ide.search.PowerShellUsagesProvider"/>
-
-    <lang.psiStructureViewFactory language="PowerShell"
-                                  implementationClass="com.intellij.plugin.powershell.ide.structure.PowerShellStructureViewFactory"/>
-
-    <lang.braceMatcher language="PowerShell"
-                       implementationClass="com.intellij.plugin.powershell.ide.editor.highlighting.PowerShellPairedBraceMatcher"/>
-
-    <lang.foldingBuilder language="PowerShell"
-                         implementationClass="com.intellij.plugin.powershell.ide.editor.PowerShellFoldingBuilder"/>
-
-    <configurationType implementation="com.intellij.plugin.powershell.ide.run.PowerShellConfigurationType"/>
-    <runConfigurationProducer
-        implementation="com.intellij.plugin.powershell.ide.run.PowerShellConfigurationProducer" order="first"/>
-
-    <runConfigurationTemplateProvider implementation="com.intellij.plugin.powershell.ide.run.MyRunConfigurationTemplateProvider"/>
-
-    <targetElementEvaluator language="PowerShell"
-                            implementationClass="com.intellij.plugin.powershell.ide.search.PowerShellTargetElementEvaluator"/>
-
-    <lang.refactoringSupport language="PowerShell"
-                             implementationClass="com.intellij.plugin.powershell.ide.refactoring.PowerShellElementRefactoringSupportProvider"/>
-    <lang.namesValidator language="PowerShell"
-                         implementationClass="com.intellij.plugin.powershell.ide.refactoring.PowerShellNamesValidator"/>
-    <renameInputValidator implementation="com.intellij.plugin.powershell.ide.refactoring.PowerShellElementRenameInputValidator"/>
-    <renamePsiElementProcessor implementation="com.intellij.plugin.powershell.ide.refactoring.PowerShellRenamePsiElementProcessor"/>
-
-    <liveTemplateContext implementation="com.intellij.plugin.powershell.ide.editor.generate.PowerShellLanguageContext"/>
-    <liveTemplateContext implementation="com.intellij.plugin.powershell.ide.editor.generate.PowerShellDeclarationContext"/>
-    <liveTemplateContext implementation="com.intellij.plugin.powershell.ide.editor.generate.PowerShellStatementContext"/>
-
-    <defaultLiveTemplatesProvider implementation="com.intellij.plugin.powershell.ide.editor.generate.PowerShellLiveTemplatesProvider"/>
-
-    <completion.contributor language="PowerShell"
-                            implementationClass="com.intellij.plugin.powershell.ide.editor.completion.PowerShellCompletionContributor"/>
-
-    <lang.documentationProvider language="PowerShell"
-                                implementationClass="com.intellij.plugin.powershell.ide.editor.documentation.PowerShellDocumentationProvider"/>
-    <!--LSP-->
-    <typedHandler implementation="com.intellij.plugin.powershell.lang.lsp.ide.listeners.LSPTypedHandler" id="LSPTypedHandler"/>
-
-    <localInspection language="PowerShell" shortName="PSScriptAnalyzer" bundle="messages.MessagesBundle" key="editor.services.inspection"
-                     groupKey="settings.powershell" enabledByDefault="true" level="SERVER PROBLEM" hasStaticDescription="true" suppressId="PSScriptAnalyzer"
-                     implementationClass="com.intellij.plugin.powershell.lang.lsp.ide.inspection.PSESInspection"/>
-
-    <applicationConfigurable id="Settings.PowerShell"
-                             groupId="language"
-                             instance="com.intellij.plugin.powershell.lang.lsp.ide.settings.PowerShellConfigurable"
-                             bundle="messages.MessagesBundle"
-                             key="settings.powershell"/>
-
-  </extensions>
-
-  <actions>
-    <action id="NewPowerShellFile" class="com.intellij.plugin.powershell.ide.actions.NewPowerShellFileAction">
-      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
-    </action>
-  </actions>
+        <lang.commenter language="PowerShell"
+                        implementationClass="com.intellij.plugin.powershell.ide.editor.PowerShellCommenter"/>
 
 
-  <application-components>
-    <component>
-      <implementation-class>com.intellij.plugin.powershell.lang.lsp.LSPInitMain</implementation-class>
-    </component>
-  </application-components>
+        <lang.findUsagesProvider language="PowerShell"
+                                 implementationClass="com.intellij.plugin.powershell.ide.search.PowerShellUsagesProvider"/>
+
+        <lang.psiStructureViewFactory language="PowerShell"
+                                      implementationClass="com.intellij.plugin.powershell.ide.structure.PowerShellStructureViewFactory"/>
+
+        <lang.braceMatcher language="PowerShell"
+                           implementationClass="com.intellij.plugin.powershell.ide.editor.highlighting.PowerShellPairedBraceMatcher"/>
+
+        <lang.foldingBuilder language="PowerShell"
+                             implementationClass="com.intellij.plugin.powershell.ide.editor.PowerShellFoldingBuilder"/>
+
+        <configurationType implementation="com.intellij.plugin.powershell.ide.run.PowerShellConfigurationType"/>
+        <runConfigurationProducer
+                implementation="com.intellij.plugin.powershell.ide.run.PowerShellConfigurationProducer" order="first"/>
+
+        <runConfigurationTemplateProvider
+                implementation="com.intellij.plugin.powershell.ide.run.MyRunConfigurationTemplateProvider"/>
+
+        <targetElementEvaluator language="PowerShell"
+                                implementationClass="com.intellij.plugin.powershell.ide.search.PowerShellTargetElementEvaluator"/>
+
+        <lang.refactoringSupport language="PowerShell"
+                                 implementationClass="com.intellij.plugin.powershell.ide.refactoring.PowerShellElementRefactoringSupportProvider"/>
+        <lang.namesValidator language="PowerShell"
+                             implementationClass="com.intellij.plugin.powershell.ide.refactoring.PowerShellNamesValidator"/>
+        <renameInputValidator
+                implementation="com.intellij.plugin.powershell.ide.refactoring.PowerShellElementRenameInputValidator"/>
+        <renamePsiElementProcessor
+                implementation="com.intellij.plugin.powershell.ide.refactoring.PowerShellRenamePsiElementProcessor"/>
+
+        <liveTemplateContext
+                implementation="com.intellij.plugin.powershell.ide.editor.generate.PowerShellLanguageContext"/>
+        <liveTemplateContext
+                implementation="com.intellij.plugin.powershell.ide.editor.generate.PowerShellDeclarationContext"/>
+        <liveTemplateContext
+                implementation="com.intellij.plugin.powershell.ide.editor.generate.PowerShellStatementContext"/>
+
+        <defaultLiveTemplatesProvider
+                implementation="com.intellij.plugin.powershell.ide.editor.generate.PowerShellLiveTemplatesProvider"/>
+
+        <completion.contributor language="PowerShell"
+                                implementationClass="com.intellij.plugin.powershell.ide.editor.completion.PowerShellCompletionContributor"/>
+
+        <lang.documentationProvider language="PowerShell"
+                                    implementationClass="com.intellij.plugin.powershell.ide.editor.documentation.PowerShellDocumentationProvider"/>
+        <!--LSP-->
+        <typedHandler implementation="com.intellij.plugin.powershell.lang.lsp.ide.listeners.LSPTypedHandler"
+                      id="LSPTypedHandler"/>
+
+        <localInspection language="PowerShell" shortName="PSScriptAnalyzer" bundle="messages.MessagesBundle"
+                         key="editor.services.inspection"
+                         groupKey="settings.powershell" enabledByDefault="true" level="SERVER PROBLEM"
+                         hasStaticDescription="true" suppressId="PSScriptAnalyzer"
+                         implementationClass="com.intellij.plugin.powershell.lang.lsp.ide.inspection.PSESInspection"/>
+
+        <applicationConfigurable id="Settings.PowerShell"
+                                 groupId="language"
+                                 instance="com.intellij.plugin.powershell.lang.lsp.ide.settings.PowerShellConfigurable"
+                                 bundle="messages.MessagesBundle"
+                                 key="settings.powershell"/>
+
+    </extensions>
+
+    <actions>
+        <action id="NewPowerShellFile" class="com.intellij.plugin.powershell.ide.actions.NewPowerShellFileAction">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
+        </action>
+    </actions>
+
+
+    <application-components>
+        <component>
+            <implementation-class>com.intellij.plugin.powershell.lang.lsp.LSPInitMain</implementation-class>
+        </component>
+    </application-components>
 
 </idea-plugin>
