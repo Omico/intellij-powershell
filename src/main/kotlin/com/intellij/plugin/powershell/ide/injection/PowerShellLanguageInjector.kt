@@ -44,7 +44,8 @@ class PowerShellLanguageInjector : MultiHostInjector {
         if (context.hasSubstitutions()) {
             val parts = splitLiteralToInjectionParts(baseInjection, context)
             val language = InjectorUtils.getLanguageByString(baseInjection.injectedLanguageId) ?: return
-            InjectorUtils.registerInjection(language, parts.ranges, file, registrar)
+            val list = parts.ranges.map { InjectorUtils.InjectionInfo(it.first, it.second, it.third) }
+            InjectorUtils.registerInjection(language, file, list, registrar)
             InjectorUtils.registerSupport(support, false, context, language)
             InjectorUtils.putInjectedFileUserData(
                 context, language, InjectedLanguageManager.FRANKENSTEIN_INJECTION,
@@ -112,7 +113,7 @@ class PowerShellLanguageInjector : MultiHostInjector {
                         suffix,
                     ),
                 )
-            } else if (!prefix.isEmpty() || i == 0) {
+            } else if (prefix.isNotEmpty() || i == 0) {
                 ranges.add(
                     createInjectionRange(
                         context,
@@ -127,7 +128,7 @@ class PowerShellLanguageInjector : MultiHostInjector {
             i++
         }
 
-        if (lastChild != null && !prefix.isEmpty()) {
+        if (lastChild != null && prefix.isNotEmpty()) {
             // Last element was interpolated part, need to add a range after it
             createInjectionRange(
                 context,

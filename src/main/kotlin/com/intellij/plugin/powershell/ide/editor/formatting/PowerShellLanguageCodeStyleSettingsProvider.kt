@@ -6,6 +6,7 @@ import com.intellij.lang.Language
 import com.intellij.plugin.powershell.ide.MessagesBundle
 import com.intellij.plugin.powershell.lang.PowerShellLanguage
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizableOptions
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 
@@ -200,28 +201,30 @@ class PowerShellLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsPro
                     PowerShellCodeStyleSettings::class.java,
                     "SPACE_WITHIN_SUB_EXPRESSION_PARENTHESES",
                     "Sub-expression parentheses",
-                    CodeStyleSettingsCustomizable.SPACES_WITHIN,
+                    CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN,
                 )
 
                 consumer.showCustomOption(
                     PowerShellCodeStyleSettings::class.java,
                     "SPACE_BEFORE_DATA_LBRACE",
                     "'data' left brace",
-                    CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE,
+                    CodeStyleSettingsCustomizableOptions.getInstance().SPACES_BEFORE_LEFT_BRACE,
                 )
                 consumer.showCustomOption(
                     PowerShellCodeStyleSettings::class.java,
                     "SPACE_BEFORE_TRAP_LBRACE",
                     "'trap' left brace",
-                    CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE,
+                    CodeStyleSettingsCustomizableOptions.getInstance().SPACES_BEFORE_LEFT_BRACE,
                 )
                 consumer.showCustomOption(
                     PowerShellCodeStyleSettings::class.java, "SPACE_BEFORE_COLON", "Before colon",
-                    CodeStyleSettingsCustomizable.SPACES_OTHER, CodeStyleSettingsCustomizable.OptionAnchor.BEFORE,
+                    CodeStyleSettingsCustomizableOptions.getInstance().SPACES_OTHER,
+                    CodeStyleSettingsCustomizable.OptionAnchor.BEFORE,
                 )
                 consumer.showCustomOption(
                     PowerShellCodeStyleSettings::class.java, "SPACE_AFTER_COLON", "After colon",
-                    CodeStyleSettingsCustomizable.SPACES_OTHER, CodeStyleSettingsCustomizable.OptionAnchor.BEFORE,
+                    CodeStyleSettingsCustomizableOptions.getInstance().SPACES_OTHER,
+                    CodeStyleSettingsCustomizable.OptionAnchor.BEFORE,
                 )
             }
             SettingsType.BLANK_LINES_SETTINGS -> consumer.showStandardOptions("KEEP_BLANK_LINES_IN_CODE")
@@ -280,7 +283,7 @@ class PowerShellLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsPro
                     PowerShellCodeStyleSettings::class.java,
                     "KEEP_SIMPLE_HASH_LITERAL_IN_ONE_LINE",
                     "Simple hash literals in one line",
-                    CodeStyleSettingsCustomizable.WRAPPING_KEEP,
+                    CodeStyleSettingsCustomizableOptions.getInstance().WRAPPING_KEEP,
                 )
                 consumer.renameStandardOption("METHOD_ANNOTATION_WRAP", "Method attribute")
 
@@ -290,7 +293,7 @@ class PowerShellLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsPro
                     null,
                     CodeStyleSettingsCustomizable.OptionAnchor.AFTER,
                     "BINARY_OPERATION_WRAP",
-                    CodeStyleSettingsCustomizable.WRAP_OPTIONS,
+                    CodeStyleSettingsCustomizableOptions.getInstance().WRAP_OPTIONS,
                     CodeStyleSettingsCustomizable.WRAP_VALUES,
                 )
                 consumer.showCustomOption(
@@ -307,7 +310,7 @@ class PowerShellLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsPro
                     null,
                     CodeStyleSettingsCustomizable.OptionAnchor.AFTER,
                     "BINARY_OPERATION_WRAP",
-                    CodeStyleSettingsCustomizable.WRAP_OPTIONS,
+                    CodeStyleSettingsCustomizableOptions.getInstance().WRAP_OPTIONS,
                     CodeStyleSettingsCustomizable.WRAP_VALUES,
                 )
                 consumer.showCustomOption(
@@ -322,7 +325,7 @@ class PowerShellLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsPro
                     null,
                     CodeStyleSettingsCustomizable.OptionAnchor.AFTER,
                     "BINARY_OPERATION_WRAP",
-                    CodeStyleSettingsCustomizable.WRAP_OPTIONS,
+                    CodeStyleSettingsCustomizableOptions.getInstance().WRAP_OPTIONS,
                     CodeStyleSettingsCustomizable.WRAP_VALUES,
                 )
 
@@ -338,7 +341,7 @@ class PowerShellLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsPro
                     null,
                     CodeStyleSettingsCustomizable.OptionAnchor.AFTER,
                     "METHOD_PARAMETERS_WRAP",
-                    CodeStyleSettingsCustomizable.WRAP_OPTIONS,
+                    CodeStyleSettingsCustomizableOptions.getInstance().WRAP_OPTIONS,
                     CodeStyleSettingsCustomizable.WRAP_VALUES,
                 )
 

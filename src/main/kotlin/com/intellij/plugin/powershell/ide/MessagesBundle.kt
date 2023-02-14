@@ -1,6 +1,6 @@
 package com.intellij.plugin.powershell.ide
 
-import com.intellij.CommonBundle
+import com.intellij.AbstractBundle
 import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey
 import java.lang.ref.Reference
@@ -9,7 +9,7 @@ import java.util.ResourceBundle
 
 object MessagesBundle {
     fun message(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): String {
-        return CommonBundle.message(getBundle(), key, *params)
+        return AbstractBundle.message(getBundle(), key, *params)
     }
 
     private var ourBundle: Reference<ResourceBundle>? = null
