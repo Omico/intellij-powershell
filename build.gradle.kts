@@ -140,7 +140,7 @@ val refreshPowerShellEditorServices by tasks.registering {
     }
 }
 
-tasks.patchPluginXml{
+tasks.patchPluginXml {
     sinceBuild.set("223")
 }
 

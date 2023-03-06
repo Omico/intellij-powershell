@@ -25,7 +25,6 @@ abstract class PowerShellScriptContextType(presentableName: String) : TemplateCo
             else -> templateActionContext.file is PowerShellFile && isInContext(place)
         }
 
-
     final override fun createHighlighter(): SyntaxHighlighter? =
         SyntaxHighlighterFactory.getSyntaxHighlighter(PowerShellFileType.INSTANCE, null, null)
 }
