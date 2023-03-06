@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 @State(
     name = "PowerShellSettings",
-    storages = [Storage(file = "powerShellSettings.xml", roamingType = RoamingType.DISABLED)],
+    storages = [Storage(value = "powerShellSettings.xml", roamingType = RoamingType.DISABLED)],
 )
 class LSPInitMain : PersistentStateComponent<LSPInitMain.PowerShellInfo>, Disposable {
 
