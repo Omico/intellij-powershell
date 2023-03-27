@@ -183,18 +183,18 @@
         <renamePsiElementProcessor
                 implementation="com.intellij.plugin.powershell.ide.refactoring.PowerShellRenamePsiElementProcessor"/>
 
+        <defaultLiveTemplates file="liveTemplates/PowerShellLiveTemplates.xml"/>
         <liveTemplateContext
                 contextId="POWERSHELL"
                 implementation="com.intellij.plugin.powershell.ide.editor.generate.PowerShellLanguageContext"/>
         <liveTemplateContext
+                baseContextId="POWERSHELL"
                 contextId="POWERSHELL_DECLARATION"
                 implementation="com.intellij.plugin.powershell.ide.editor.generate.PowerShellDeclarationContext"/>
         <liveTemplateContext
+                baseContextId="POWERSHELL"
                 contextId="POWERSHELL_STATEMENT"
                 implementation="com.intellij.plugin.powershell.ide.editor.generate.PowerShellStatementContext"/>
-
-        <defaultLiveTemplatesProvider
-                implementation="com.intellij.plugin.powershell.ide.editor.generate.PowerShellLiveTemplatesProvider"/>
 
         <completion.contributor language="PowerShell"
                                 implementationClass="com.intellij.plugin.powershell.ide.editor.completion.PowerShellCompletionContributor"/>
