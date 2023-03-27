@@ -17,7 +17,7 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.intellij") version "1.13.1"
+    id("org.jetbrains.intellij") version "1.13.2"
     id("org.jetbrains.kotlin.jvm") version "1.8.10"
     id("com.diffplug.spotless") version "6.16.0"
     id("me.omico.age.spotless") version "1.0.0-SNAPSHOT"
