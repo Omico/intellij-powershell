@@ -19,20 +19,20 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.util.SystemInfo
-import com.intellij.openapi.vfs.CharsetToolkit
 import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.plugin.powershell.lang.lsp.languagehost.EditorServicesLanguageHostStarter
 import com.intellij.plugin.powershell.lang.lsp.languagehost.LanguageHostConnectionManager
 import com.intellij.plugin.powershell.lang.lsp.languagehost.LanguageServerEndpoint
 import com.intellij.terminal.JBTerminalWidget
-import com.intellij.ui.GuiUtils
 import com.intellij.util.EnvironmentUtil
+import com.intellij.util.ModalityUiUtil
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.jediterm.pty.PtyProcessTtyConnector
 import com.jediterm.terminal.TtyConnector
 import com.jediterm.terminal.ui.TerminalWidget
 import com.pty4j.PtyProcess
+import com.pty4j.PtyProcessBuilder
 import org.jetbrains.plugins.terminal.JBTerminalSystemSettingsProvider
 import org.jetbrains.plugins.terminal.TerminalProjectOptionsProvider
 import java.awt.BorderLayout
@@ -40,6 +40,7 @@ import java.awt.Component
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Future
 import javax.swing.JPanel
@@ -47,7 +48,7 @@ import javax.swing.JPanel
 class PowerShellConsoleTerminalRunner(project: Project) :
     EditorServicesLanguageHostStarter(project),
     LanguageHostConnectionManager {
-    private val myDefaultCharset = CharsetToolkit.UTF8_CHARSET
+    private val myDefaultCharset = StandardCharsets.UTF_8
     private val LOG = Logger.getInstance(javaClass)
 
     private var myServer: LanguageServerEndpoint? = null
@@ -78,11 +79,13 @@ class PowerShellConsoleTerminalRunner(project: Project) :
             try {
                 val logFile = File(PathManager.getLogPath(), "pty-ps.log")
                 logFile.createNewFile()
-                return PtyProcess.exec(
-                    command, envs,
-                    directory ?: TerminalProjectOptionsProvider.getInstance(project).startingDirectory,
-                    false, false, logFile,
-                )
+                return PtyProcessBuilder(command)
+                    .setEnvironment(envs)
+                    .setDirectory(directory ?: TerminalProjectOptionsProvider.getInstance(project).startingDirectory)
+                    .setConsole(false)
+                    .setCygwin(false)
+                    .setLogFile(logFile)
+                    .start()
             } catch (e: IOException) {
                 throw ExecutionException(e)
             }
@@ -101,23 +104,20 @@ class PowerShellConsoleTerminalRunner(project: Project) :
         try {
             initConsoleUI(process)
         } catch (e: Exception) {
-            GuiUtils.invokeLaterIfNeeded(
-                {
-                    Messages.showErrorDialog(
-                        this@PowerShellConsoleTerminalRunner.myProject,
-                        e.message,
-                        "Launching PowerShell terminal console",
-                    )
-                },
-                ModalityState.NON_MODAL,
-            )
+            ModalityUiUtil.invokeLaterIfNeeded(ModalityState.NON_MODAL) {
+                Messages.showErrorDialog(
+                    this@PowerShellConsoleTerminalRunner.myProject,
+                    e.message,
+                    "Launching PowerShell terminal console",
+                )
+            }
         }
         return process
     }
 
     private fun initConsoleUI(process: PtyProcess) {
         try {
-            GuiUtils.invokeLaterIfNeeded({ doInitConsoleUI(process) }, ModalityState.NON_MODAL)
+            ModalityUiUtil.invokeLaterIfNeeded(ModalityState.NON_MODAL) { doInitConsoleUI(process) }
         } catch (e: Exception) {
             throw RuntimeException(e.message, e)
         }
